@@ -1,56 +1,23 @@
 <resources>
     <string name="app_name">AniWatch</string>
 
-    <!-- Vision description -->
-    <string name="vision">At AniWatch, we aim to provide anime fans with a seamless streaming experience, offering a vast library of high-quality shows. Our goal is to create a user-friendly platform where fans can easily discover, watch, and enjoy anime, anytime and anywhere. We’re dedicated to making anime more accessible and enjoyable for everyone.</string>
+    <string-array name="movie_titles">
+        <item>One Piece</item>
+        <item>Naruto</item>
+        <item>Bleach</item>
+        <item>Fairy Tail</item>
+        <item>Black Clover</item>
 
-    <string name="person1_name">Leana Mariflor A. Belaguas</string>
-    <string name="person1_bio">Software engineer with 5 years of experience...</string>
-    <string name="person1_experience">Java, Kotlin, Android Development, UI/UX</string>
+    </string-array>
 
-    <string name="person2_name">Jon Vic T. Barcenas</string>
-    <string name="person2_bio">Frontend developer with expertise in React...</string>
-    <string name="person2_experience">React, JavaScript, HTML/CSS, Frontend Development</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <!-- Movie Descriptions -->
+    <string-array name="movie_descriptions">
+        <item>One Piece is a popular manga and anime series created by Eiichiro Oda. Set in a world where pirates roam the seas, the story follows Monkey D. Luffy and his crew, the Straw Hat Pirates, as they search for the ultimate treasure known as the "One Piece" and strive to become the next Pirate King..</item>
+        <item>Naruto is a Japanese anime series and manga series about a young ninja named Naruto Uzumaki. The story follows Naruto as he overcomes challenges to become the leader of his village, the Hokage. </item>
+        <item>Bleach is a Japanese manga series written and illustrated by Tite Kubo. It follows the adventures of a teenager Ichigo Kurosaki, who obtains the powers of a Soul Reaper—a death personification similar to a Grim Reaper—from another Soul Reaper, Rukia Kuchiki.</item>
+        <item>Fairy Tail is a Japanese manga series written and illustrated by Hiro Mashima. The series follows the adventures of the Celestial Spirit Mage Lucy Heartfilia after she joins the Fairy Tail Guild and teams up with Natsu Dragneel. </item>
+        <item>Black Clover is set in a world where people are born with the ability to use magic, the story follows Asta, a young boy without any magic power who is given a rare grimoire that grants him anti-magic abilities. With his fellow mages from the Black Bulls, Asta plans to become the next Wizard King.</item>
+    </string-array>
 
-    <string name="lorem_ipsum">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
-        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
-        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
-        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
-        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
-        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
-        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
-        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
-        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
-        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
-        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
-        bibendum, vel congue leo egestas.\n\n
-        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
-        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
-        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
-        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
-        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
-        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
-        est.\n\n
-        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
-        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
-        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
-        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
-        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
-        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
-        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
-        convallis.\n\n
-        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
-        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
-        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
-        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
-        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
-        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
-        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
-    </string>
+
 </resources>

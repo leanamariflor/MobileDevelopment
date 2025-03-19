@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.adapter
 
 import android.content.Context
 import android.net.Uri

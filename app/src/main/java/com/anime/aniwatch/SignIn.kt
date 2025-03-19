@@ -2,9 +2,12 @@ package com.anime.aniwatch
 
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.anime.aniwatch.databinding.ActivitySignInBinding
 
@@ -49,6 +52,25 @@ class SignIn : AppCompatActivity() {
 
         binding.signupRedirectText.setOnClickListener {
             startActivity(Intent(this, SignUp::class.java))
+        }
+
+        binding.forgotPassword.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            val view = layoutInflater.inflate(R.layout.forgot_password, null)
+
+            builder.setView(view)
+            val dialog = builder.create()
+
+            view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            if (dialog.window != null) {
+                dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
+            }
+
+            dialog.show()
+
         }
     }
 

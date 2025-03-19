@@ -65,7 +65,7 @@ class AccountFragment : Fragment() {
         }
 
         binding.notifications.setOnClickListener {
-            startActivity(Intent(requireContext(), SettingsActivity::class.java))
+            startActivity(Intent(requireContext(), Notifications::class.java))
         }
 
         binding.logout.setOnClickListener {
@@ -82,13 +82,12 @@ class AccountFragment : Fragment() {
             val updatedEmail = data?.getStringExtra("updatedEmail")
 
             if (!updatedUsername.isNullOrEmpty()) {
-                binding.fullName.text = updatedUsername // Update the username in the UI
+                binding.fullName.text = updatedUsername
             }
 
-            // Handle the image update
             val imageResId = data?.getIntExtra("selectedImage", R.drawable.account) ?: R.drawable.account
-            val profileImageView: ImageView = binding.profile  // Assuming you have an ImageView in the AccountFragment layout
-            profileImageView.setImageResource(imageResId)  // Set the selected image resource ID to the ImageView
+            val profileImageView: ImageView = binding.profile
+            profileImageView.setImageResource(imageResId)
         }
     }
 
