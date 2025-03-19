@@ -2,14 +2,8 @@ package com.anime.aniwatch
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.anime.aniwatch.AccountFragment
-import com.anime.aniwatch.HomeFragment
-import com.anime.aniwatch.ListFragment
-import com.anime.aniwatch.R
-import com.anime.aniwatch.SearchActivity
 import com.anime.aniwatch.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -106,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.action_search -> {
-                val intent = Intent(this, SearchActivity::class.java)
+                val intent = Intent(this, Search::class.java)
                 startActivity(intent)
                 true
             }

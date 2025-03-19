@@ -53,7 +53,7 @@
 
         <!-- Change Password Button -->
         <Button
-            android:id="@+id/changepassword"
+            android:id="@+id/change_pass"
             android:layout_width="357dp"
             android:layout_height="52dp"
             android:backgroundTint="@color/blue"

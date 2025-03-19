@@ -19,7 +19,10 @@
             android:name=".MovieDetailActivity"
             android:exported="true"
             android:theme="@style/Theme.App.AniWatch" />
-
+        <activity
+            android:name=".ChangePassword"
+            android:exported="true"
+            android:theme="@style/Theme.App.AniWatch" />
         <activity
             android:name=".Notifications"
             android:exported="false"
@@ -35,7 +38,7 @@
             android:name=".SecurityActivity"
             android:exported="true" />
         <activity
-            android:name=".SearchActivity"
+            android:name=".Search"
             android:exported="true" />
         <activity
             android:name=".SignIn"

@@ -8,14 +8,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.anime.aniwatch.adapter.ProfileImageAdapter
 import com.anime.aniwatch.databinding.ActivityProfileEditBinding
 
 class ProfileEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileEditBinding
     private var imageUri: Uri? = null
-    private val TAG = "PROFILE_EDIT_TAG"
 
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -49,51 +47,15 @@ class ProfileEditActivity : AppCompatActivity() {
         binding.emailadd.setText(userEmail)
         binding.username.setText(username)
 
-        binding.profileImage.setOnClickListener {
-            showImagePickerDialog()
-        }
+
 
         binding.update.setOnClickListener {
             updateProfile()
         }
     }
 
-    private fun showImagePickerDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.profile_images, null)
-        val gridView = dialogView.findViewById<GridView>(R.id.gridViewImages)
 
-        val imageIds = arrayOf(
-            R.drawable.zoro, R.drawable.luffy, R.drawable.sanji
 
-        )
-
-        val imageAdapter = ProfileImageAdapter(this, imageIds)
-        gridView.adapter = imageAdapter
-
-        val dialog = android.app.AlertDialog.Builder(this)
-            .setTitle("Select Profile Image")
-            .setView(dialogView)
-            .setCancelable(true)
-            .create()
-
-        dialog.show()
-
-        gridView.setOnItemClickListener { parent, view, position, id ->
-            when (position) {
-                0 -> setProfileImage(R.drawable.zoro) 1 -> setProfileImage(R.drawable.luffy) 2 -> setProfileImage(R.drawable.sanji)
-            }
-            dialog.dismiss()
-        }
-    }
-
-    private fun setProfileImage(imageResId: Int) {
-        binding.profileImage.setImageResource(imageResId)
-
-        val sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("profileImageRes", imageResId)
-        editor.apply()
-    }
 
     private fun loadProfileImage() {
         val sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE)

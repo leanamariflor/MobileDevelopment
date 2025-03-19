@@ -68,6 +68,8 @@ class AccountFragment : Fragment() {
             startActivity(Intent(requireContext(), Notifications::class.java))
         }
 
+
+
         binding.logout.setOnClickListener {
             showLogoutDialog()
         }
