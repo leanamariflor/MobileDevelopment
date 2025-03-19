@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Color when pressed (clicked) -->
+    <item android:state_pressed="true">
+        <color android:color="@color/blue"/>  <!-- Light Blue -->
+    </item>    <!-- Color when focused (long-pressed) -->
+    <item android:state_focused="true">
+        <color android:color="@color/blue"/>  <!-- Light Red -->
+    </item>
+    <!-- Default color -->
+    <item>
+        <color android:color="@color/blue"/>  <!-- Your default blue -->
+    </item>
+</selector>

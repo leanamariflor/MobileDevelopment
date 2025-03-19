@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">AniWatch</string>
+
+    <!-- Vision description -->
+    <string name="vision">At AniWatch, we aim to provide anime fans with a seamless streaming experience, offering a vast library of high-quality shows. Our goal is to create a user-friendly platform where fans can easily discover, watch, and enjoy anime, anytime and anywhere. We’re dedicated to making anime more accessible and enjoyable for everyone.</string>
+
+    <string name="person1_name">Leana Mariflor A. Belaguas</string>
+    <string name="person1_bio">Software engineer with 5 years of experience...</string>
+    <string name="person1_experience">Java, Kotlin, Android Development, UI/UX</string>
+
+    <string name="person2_name">Jon Vic T. Barcenas</string>
+    <string name="person2_bio">Frontend developer with expertise in React...</string>
+    <string name="person2_experience">React, JavaScript, HTML/CSS, Frontend Development</string>
+</resources>

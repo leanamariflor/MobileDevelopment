@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/visionLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:text="VISION"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="8dp" />
+    <!-- Vision Text View -->
+    <TextView
+        android:id="@+id/vision"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:text="@string/vision"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="8dp"
+        android:paddingBottom="50dp"
+        android:justificationMode="inter_word"/>
+
+    <!-- Image View for displaying person image -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/account" />
+
+    <!-- Name Text View -->
+    <TextView
+        android:id="@+id/personName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Person Name"
+        android:textSize="18sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="8dp" />
+
+    <!-- Bio Text View -->
+    <TextView
+        android:id="@+id/personBio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Person Bio"
+        android:textSize="14sp"
+        android:layout_gravity="center_horizontal"
+        android:paddingTop="4dp" />
+
+</LinearLayout>

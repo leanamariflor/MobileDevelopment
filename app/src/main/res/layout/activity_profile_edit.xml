@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".ProfileEditActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:background="@color/black"
+        app:title="Edit Profile"
+        app:titleTextColor="@android:color/white" />
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="703dp">
+
+                <ImageView
+                    android:id="@+id/profile_image"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="50dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/account" />
+
+                <ImageView
+                    android:id="@+id/edit"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_alignEnd="@id/profile_image"
+                    android:layout_marginTop="110dp"
+                    android:src="@drawable/edit" />
+
+                <EditText
+                    android:id="@+id/username"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/profile_image"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="51dp"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/line"
+                    android:hint="Display name"
+                    android:padding="10dp"
+                    android:textColorHint="@color/white"
+                    android:textSize="18sp" />
+
+                <EditText
+                    android:id="@+id/emailadd"
+                    android:layout_width="300dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/username"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginEnd="30dp"
+                    android:background="@drawable/line"
+                    android:hint="Email"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/emailadd"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="96dp"
+                    android:layout_marginEnd="134dp"
+                    android:backgroundTint="@color/blue"
+                    android:text="Update"
+                    android:textColor="@color/black" />
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

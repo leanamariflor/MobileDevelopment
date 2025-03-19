@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Set a solid background or a separate background image -->
+    <!-- Change to a solid color or a separate image -->
+
+    <!-- Foreground should be the main logo -->
+    <foreground android:drawable="@drawable/logo_no_bg"/>
+
+    <!-- Optional: Use a monochrome version for Material You themes -->
+    <monochrome android:drawable="@drawable/logo_no_bg"/>
+</adaptive-icon>
