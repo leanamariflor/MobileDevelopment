@@ -15,7 +15,6 @@ class SecurityActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_security)
 
-        // Set up the toolbar with a back button
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -24,24 +23,29 @@ class SecurityActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        rememberSwitch = findViewById(R.id.remember_switch)
         sharedPrefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        rememberSwitch = findViewById(R.id.remember_switch)
 
-        // Get saved "Remember Me" state from SharedPreferences and set the Switch
+        checkRememberMe()
+
+        rememberSwitch.setOnCheckedChangeListener { _, isChecked ->
+            saveRememberMeState(isChecked)
+        }
+    }
+
+    private fun saveRememberMeState(isChecked: Boolean) {
+        val editor = sharedPrefs.edit()
+        editor.putBoolean("rememberMe", isChecked)
+        editor.apply()
+
+        if (!isChecked) {
+            clearLoginCredentials()
+        }
+    }
+
+    private fun checkRememberMe() {
         val isRememberMe = sharedPrefs.getBoolean("rememberMe", false)
         rememberSwitch.isChecked = isRememberMe
-
-        // Save the state when the switch is toggled
-        rememberSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val editor = sharedPrefs.edit()
-            editor.putBoolean("rememberMe", isChecked)
-            editor.apply()
-
-            // If switched off, clear the stored credentials
-            if (!isChecked) {
-                clearLoginCredentials()
-            }
-        }
     }
 
     private fun clearLoginCredentials() {

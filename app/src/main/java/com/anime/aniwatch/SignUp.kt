@@ -17,12 +17,11 @@ class SignUp : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
-        binding. loginRedirectText.setOnClickListener {
+        binding.loginRedirectText.setOnClickListener {
             Toast.makeText(this, "Navigating to Sign In", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SignIn::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, SignIn::class.java))
         }
 
         binding.signupButton.setOnClickListener {
@@ -36,12 +35,10 @@ class SignUp : AppCompatActivity() {
                         val editor = sharedPreferences.edit()
                         editor.putString("email", email)
                         editor.putString("password", password)
-                        editor.apply() // Save the data
+                        editor.apply()
 
                         Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show()
-
-                        val intent = Intent(this, SignIn::class.java)
-                        startActivity(intent)
+                        startActivity(Intent(this, SignIn::class.java))
                         finish()
                     } else {
                         Toast.makeText(this, "Password does not match.", Toast.LENGTH_SHORT).show()
@@ -55,13 +52,9 @@ class SignUp : AppCompatActivity() {
         }
     }
 
-
-
     private fun isValidEmail(email: String): Boolean {
         val emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
         return Pattern.compile(emailPattern).matcher(email).matches()
     }
-
-
 }

@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
 
-        // Update toolbar based on the fragment
         when (fragment) {
             is HomeFragment -> {
                 supportActionBar?.show()
@@ -82,7 +81,6 @@ class MainActivity : AppCompatActivity() {
         searchButton?.isVisible = true
     }
 
-    // Handle toolbar menu items
     override fun onCreateOptionsMenu(menu: android.view.Menu?): Boolean {
         menuInflater.inflate(R.menu.action, menu)
         return true

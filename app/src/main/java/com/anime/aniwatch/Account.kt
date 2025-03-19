@@ -39,15 +39,15 @@ class AccountFragment : Fragment() {
 
         binding.email.text = savedEmail
         binding.fullName.text = savedUsername
-        // Validate image resource before applying
+
         try {
             if (savedImageResId == -1) {
-                savedImageResId = R.drawable.account // Fallback to default image
+                savedImageResId = R.drawable.account
             }
             binding.profile.setImageResource(savedImageResId)
         } catch (e: Resources.NotFoundException) {
             e.printStackTrace()
-            binding.profile.setImageResource(R.drawable.account) // Use safe default
+            binding.profile.setImageResource(R.drawable.account)
         }
 
 
@@ -61,6 +61,10 @@ class AccountFragment : Fragment() {
         }
 
         binding.settings.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingsActivity::class.java))
+        }
+
+        binding.notifications.setOnClickListener {
             startActivity(Intent(requireContext(), SettingsActivity::class.java))
         }
 
