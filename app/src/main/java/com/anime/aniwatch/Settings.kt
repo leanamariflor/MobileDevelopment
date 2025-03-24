@@ -22,7 +22,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val developersSection: LinearLayout = findViewById(R.id.developers)
         developersSection.setOnClickListener {
-            val intent = Intent(this, DevelopersFragment::class.java)
+            val intent = Intent(this, DevelopersActivity::class.java)
             startActivity(intent)
         }
     }

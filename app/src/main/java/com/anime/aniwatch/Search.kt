@@ -24,6 +24,7 @@ class Search : AppCompatActivity() {
         val backButton: ImageView = binding.backButton
         backButton.setOnClickListener { onBackPressed() }
 
+
         val listView: ListView = binding.list
         val searchView: SearchView = binding.search
 
@@ -55,13 +56,18 @@ class Search : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean = false
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val filteredList = listOfMovies.filter { movie ->
-                    movie.name.contains(newText ?: "", ignoreCase = true)
-                }.toMutableList()
+                if (newText.isNullOrEmpty()) {
+                    movieAdapter.updateList(listOfMovies)
+                } else {
+                    val filteredList = listOfMovies.filter { movie ->
+                        movie.name.contains(newText, ignoreCase = true)
+                    }.toMutableList()
 
-                movieAdapter.updateList(filteredList)
+                    movieAdapter.updateList(filteredList)
+                }
                 return true
             }
+
         })
     }
 }

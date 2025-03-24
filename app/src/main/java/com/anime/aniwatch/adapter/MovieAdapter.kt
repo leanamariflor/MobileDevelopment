@@ -10,11 +10,14 @@ import android.widget.TextView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.data.Movie
 
+
 class MovieAdapter(
     val context: Context,
     private var movieList: MutableList<Movie>,
     val onClickItem: (Movie) -> Unit
 ) : BaseAdapter() {
+
+    private val originalList: MutableList<Movie> = ArrayList(movieList)
 
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
         val view = contentView ?: LayoutInflater.from(context).inflate(
@@ -40,9 +43,13 @@ class MovieAdapter(
     override fun getItem(position: Int): Any = movieList[position]
     override fun getItemId(position: Int): Long = position.toLong()
 
-    fun updateList(newList: List<Movie>) {
+    fun updateList(newList: List<Movie>?) {
         movieList.clear()
-        movieList.addAll(newList)
+        if (newList.isNullOrEmpty()) {
+            movieList.addAll(originalList)
+        } else {
+            movieList.addAll(newList)
+        }
         notifyDataSetChanged()
     }
 }

@@ -45,6 +45,10 @@
             android:exported="true"
             android:theme="@style/Theme.App.AniWatch" />
         <activity
+            android:name=".DevelopersActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.AniWatch" />
+        <activity
             android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.App.AniWatch">
