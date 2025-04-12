@@ -1,4 +1,4 @@
-package com.anime.aniwatch.data
+package com.anime.aniwatch.models
 
 import com.anime.aniwatch.R
 

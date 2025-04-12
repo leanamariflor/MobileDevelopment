@@ -1,20 +1,16 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.os.Bundle
-import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.anime.aniwatch.databinding.ActivityChangePasswordBinding
-import com.google.firebase.auth.EmailAuthProvider
-import com.google.firebase.auth.FirebaseAuth
+import com.anime.aniwatch.R
 
-class ChangePassword : AppCompatActivity() {
-
-    private lateinit var binding: ActivityChangePasswordBinding
-
+class NotificationsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_change_password)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_notifications)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)

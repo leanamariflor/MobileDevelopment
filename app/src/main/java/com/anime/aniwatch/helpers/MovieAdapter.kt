@@ -1,4 +1,4 @@
-package com.anime.aniwatch.helper
+package com.anime.aniwatch.helpers
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,7 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.anime.aniwatch.R
-import com.anime.aniwatch.data.Movie
+import com.anime.aniwatch.models.Movie
 
 
 class MovieAdapter(

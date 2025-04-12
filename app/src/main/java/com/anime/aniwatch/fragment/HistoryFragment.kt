@@ -1,13 +1,14 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.anime.aniwatch.R
 
 
-class History : Fragment() {
+class HistoryFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 

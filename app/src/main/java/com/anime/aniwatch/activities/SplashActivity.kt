@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
         binding.start.setOnClickListener {
             Toast.makeText(this, "Navigating to SignIn", Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, SignIn::class.java)
+            val intent = Intent(this, SignInActivity::class.java)
             startActivity(intent)
 
         }

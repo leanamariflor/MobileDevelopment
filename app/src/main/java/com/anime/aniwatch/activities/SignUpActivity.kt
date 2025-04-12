@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.anime.aniwatch.databinding.ActivitySignUpBinding
 import java.util.regex.Pattern
 
-class SignUp : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
 
@@ -21,7 +21,7 @@ class SignUp : AppCompatActivity() {
 
         binding.loginRedirectText.setOnClickListener {
             Toast.makeText(this, "Navigating to Sign In", Toast.LENGTH_SHORT).show()
-            startActivity(Intent(this, SignIn::class.java))
+            startActivity(Intent(this, SignInActivity::class.java))
         }
 
         binding.signupButton.setOnClickListener {
@@ -38,7 +38,7 @@ class SignUp : AppCompatActivity() {
                         editor.apply()
 
                         Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, SignIn::class.java))
+                        startActivity(Intent(this, SignInActivity::class.java))
                         finish()
                     } else {
                         Toast.makeText(this, "Password does not match.", Toast.LENGTH_SHORT).show()

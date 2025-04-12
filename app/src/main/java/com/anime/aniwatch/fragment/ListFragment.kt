@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.fragment
 
 import android.os.Bundle
 import android.view.*
@@ -6,6 +6,8 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.anime.aniwatch.Download
+import com.anime.aniwatch.R
 import com.anime.aniwatch.adapter.FragmentAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -34,8 +36,8 @@ class ListFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
 
         val fragmentAdapter = FragmentAdapter(childFragmentManager)
-        fragmentAdapter.addFragment(Watchlist(), "Watchlist")
-        fragmentAdapter.addFragment(History(), "History")
+        fragmentAdapter.addFragment(WatchlistFragment(), "Watchlist")
+        fragmentAdapter.addFragment(HistoryFragment(), "History")
         fragmentAdapter.addFragment(Download(), "Download")
 
 

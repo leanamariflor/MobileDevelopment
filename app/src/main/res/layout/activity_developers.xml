@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/black"
-    tools:context=".DevelopersActivity">
+    tools:context=".activities.DevelopersActivity">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar

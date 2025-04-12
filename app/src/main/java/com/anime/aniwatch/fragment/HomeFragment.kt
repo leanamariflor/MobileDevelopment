@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
+import com.anime.aniwatch.R
 import com.anime.aniwatch.adapter.FragmentAdapter
 import com.google.android.material.tabs.TabLayout
 
@@ -21,9 +22,9 @@ class HomeFragment : Fragment() {
         val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
 
         val fragmentAdapter = FragmentAdapter(childFragmentManager)
-        fragmentAdapter.addFragment(Day(), "Today")
-        fragmentAdapter.addFragment(Week(), "Week")
-        fragmentAdapter.addFragment(Month(), "Month")
+        fragmentAdapter.addFragment(DayFragment(), "Today")
+        fragmentAdapter.addFragment(WeekFragment(), "Week")
+        fragmentAdapter.addFragment(MonthFragment(), "Month")
 
         viewPager.adapter = fragmentAdapter
 

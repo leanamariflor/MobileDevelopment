@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,9 +9,10 @@ import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.anime.aniwatch.R
 import com.anime.aniwatch.databinding.ActivitySignInBinding
 
-class SignIn : AppCompatActivity() {
+class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
     private lateinit var sharedPrefs: SharedPreferences
@@ -51,7 +52,7 @@ class SignIn : AppCompatActivity() {
         }
 
         binding.signupRedirectText.setOnClickListener {
-            startActivity(Intent(this, SignUp::class.java))
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
 
         binding.forgotPassword.setOnClickListener {

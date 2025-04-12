@@ -1,6 +1,5 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.fragment
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -13,6 +12,12 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.anime.aniwatch.R
+import com.anime.aniwatch.activities.NotificationsActivity
+import com.anime.aniwatch.activities.ProfileEditActivity
+import com.anime.aniwatch.activities.SecurityActivity
+import com.anime.aniwatch.activities.SettingsActivity
+import com.anime.aniwatch.activities.SignInActivity
 import com.anime.aniwatch.databinding.FragmentAccountBinding
 
 class AccountFragment : Fragment() {
@@ -65,7 +70,7 @@ class AccountFragment : Fragment() {
         }
 
         binding.notifications.setOnClickListener {
-            startActivity(Intent(requireContext(), Notifications::class.java))
+            startActivity(Intent(requireContext(), NotificationsActivity::class.java))
         }
 
 
@@ -87,7 +92,9 @@ class AccountFragment : Fragment() {
                 binding.fullName.text = updatedUsername
             }
 
-            val imageResId = data?.getIntExtra("selectedImage", R.drawable.account) ?: R.drawable.account
+            val imageResId = data?.getIntExtra("selectedImage",
+                R.drawable.account
+            ) ?: R.drawable.account
             val profileImageView: ImageView = binding.profile
             profileImageView.setImageResource(imageResId)
         }
@@ -117,7 +124,7 @@ class AccountFragment : Fragment() {
             apply()
         }
 
-        val intent = Intent(activity, SignIn::class.java)
+        val intent = Intent(activity, SignInActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }

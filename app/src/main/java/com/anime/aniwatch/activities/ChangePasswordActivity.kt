@@ -1,17 +1,18 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.anime.aniwatch.R
+import com.anime.aniwatch.databinding.ActivityChangePasswordBinding
 
-class Notifications : AppCompatActivity() {
+class ChangePasswordActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityChangePasswordBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_notifications)
+        setContentView(R.layout.activity_change_password)
 
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)

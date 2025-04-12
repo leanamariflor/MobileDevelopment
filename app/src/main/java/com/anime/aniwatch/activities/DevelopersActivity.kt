@@ -1,8 +1,9 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.anime.aniwatch.R
 
 class DevelopersActivity : AppCompatActivity() {
 

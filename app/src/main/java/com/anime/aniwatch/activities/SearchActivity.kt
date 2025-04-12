@@ -1,4 +1,4 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,11 +6,12 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
-import com.anime.aniwatch.data.Movie
+import com.anime.aniwatch.R
+import com.anime.aniwatch.models.Movie
 import com.anime.aniwatch.databinding.SearchBinding
-import com.anime.aniwatch.helper.MovieAdapter
+import com.anime.aniwatch.helpers.MovieAdapter
 
-class Search : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
     private lateinit var listOfMovies: MutableList<Movie>
     private lateinit var movieAdapter: MovieAdapter

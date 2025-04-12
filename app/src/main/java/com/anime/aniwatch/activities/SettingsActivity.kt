@@ -1,10 +1,11 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.widget.LinearLayout
+import com.anime.aniwatch.R
 
 class SettingsActivity : AppCompatActivity() {
 

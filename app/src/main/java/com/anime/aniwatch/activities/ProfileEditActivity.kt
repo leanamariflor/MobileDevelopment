@@ -1,13 +1,13 @@
-package com.anime.aniwatch
+package com.anime.aniwatch.activities
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.GridView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.anime.aniwatch.R
 import com.anime.aniwatch.databinding.ActivityProfileEditBinding
 
 class ProfileEditActivity : AppCompatActivity() {
