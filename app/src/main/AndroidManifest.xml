@@ -48,6 +48,9 @@
             android:name=".activities.DevelopersActivity"
             android:exported="true"
             android:theme="@style/Theme.App.AniWatch" />
+        <activity android:name=".AnimeAboutActivity"
+            android:exported="true"
+            android:theme="@style/Theme.App.AniWatch" />
         <activity
             android:name=".activities.SplashActivity"
             android:exported="true"

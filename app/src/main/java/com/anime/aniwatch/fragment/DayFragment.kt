@@ -14,6 +14,7 @@ import com.anime.aniwatch.network.ApiService
 import com.anime.aniwatch.network.HomeResponse
 import com.anime.aniwatch.util.Constants
 import com.anime.aniwatch.viewmodel.HomeViewModel
+import com.facebook.shimmer.ShimmerFrameLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class DayFragment : Fragment() {
 
+    private lateinit var shimmerLayout: ShimmerFrameLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var animeAdapter: AnimeAdapter
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -31,12 +33,22 @@ class DayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val view = inflater.inflate(R.layout.fragment_day, container, false)
+        shimmerLayout = view.findViewById(R.id.shimmerLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         homeViewModel.dayAnimeList.observe(viewLifecycleOwner) { animeList ->
-            animeAdapter = AnimeAdapter(animeList)
-            recyclerView.adapter = animeAdapter
+            if (animeList.isNullOrEmpty()) {
+                shimmerLayout.startShimmer()
+                shimmerLayout.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                shimmerLayout.stopShimmer()
+                shimmerLayout.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+                animeAdapter = AnimeAdapter(animeList)
+                recyclerView.adapter = animeAdapter
+            }
         }
 
         if (homeViewModel.dayAnimeList.value == null) {

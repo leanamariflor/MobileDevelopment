@@ -3,10 +3,14 @@ package com.anime.aniwatch.network
 import com.anime.aniwatch.data.Anime
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiService {
     @GET("api/v2/hianime/home")
     fun getHomeData(): Call<HomeResponse>
+
+    @GET("api/v2/hianime/anime/{animeId}")
+    fun getAnimeDetails(@Path("animeId") animeId: String): Call<AnimeResponse>
 }
 
 data class HomeResponse(
