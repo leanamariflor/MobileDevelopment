@@ -83,5 +83,10 @@ dependencies {
     implementation("androidx.recyclerview:recyclerview:1.4.0")
     implementation("androidx.core:core:1.7.0")
 
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
 
+    // 🔹 Kotlin Coroutines
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
 }

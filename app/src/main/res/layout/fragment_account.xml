@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/black"
-    tools:context=".AccountFragment">
+    tools:context=".fragment.AccountFragment">
 
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
