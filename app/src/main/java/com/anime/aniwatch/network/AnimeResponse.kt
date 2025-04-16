@@ -42,3 +42,20 @@ data class MoreInfo(
     val genres: List<String>,
     val malscore: String
 )
+
+data class EpisodeResponse(
+    val success: Boolean,
+    val data: EpisodeData
+)
+
+data class EpisodeData(
+    val totalEpisodes: Int,
+    val episodes: List<Episode>
+)
+
+data class Episode(
+    val title: String,
+    val episodeId: String,
+    val number: Int,
+    val isFiller: Boolean
+)

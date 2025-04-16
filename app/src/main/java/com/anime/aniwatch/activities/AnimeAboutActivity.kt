@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.anime.aniwatch.fragment.EpisodeFragment
 import com.anime.aniwatch.network.AnimeDetails
 import com.anime.aniwatch.network.AnimeResponse
 import com.anime.aniwatch.network.ApiService
@@ -59,6 +60,8 @@ class AnimeAboutActivity : AppCompatActivity() {
         // Fetch anime details
         fetchAnimeDetails(animeId)
 
+        // Load EpisodeFragment and pass the animeId
+        loadEpisodeFragment(animeId)
 
         // Set toggle button functionality
         toggleDescriptionButton.setOnClickListener {
@@ -100,7 +103,6 @@ class AnimeAboutActivity : AppCompatActivity() {
     private fun displayAnimeDetails(anime: AnimeDetails, seasons: List<Season>) {
         if (isDestroyed || isFinishing) return
 
-        // Load thumbnail
         Glide.with(this)
             .load(anime.info.poster)
             .into(thumbnail)
@@ -116,5 +118,18 @@ class AnimeAboutActivity : AppCompatActivity() {
         episodeCountText.text = "Episodes: Sub: ${anime.info.stats.episodes.sub}, Dub: ${anime.info.stats.episodes.dub}"
         ratingText.text = "${anime.moreInfo.malscore} ★"
         descriptionText.text = anime.info.description
+    }
+
+
+    private fun loadEpisodeFragment(animeId: String) {
+        val episodeFragment = EpisodeFragment().apply {
+            arguments = Bundle().apply {
+                putString("ANIME_ID", animeId)
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.episodeFragmentContainer, episodeFragment)
+            .commit()
     }
 }

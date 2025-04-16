@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:fillViewport="true">
+
     <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="#1C1C1C">
 
         <!-- Back Button -->
@@ -16,7 +19,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"/>
+                android:layout_marginStart="16dp" />
 
         <!-- Anime Thumbnail -->
         <ImageView
@@ -28,7 +31,7 @@
                 app:layout_constraintTop_toBottomOf="@id/backButton"
                 app:layout_constraintStart_toStartOf="parent"
                 android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"/>
+                android:layout_marginStart="16dp" />
 
         <!-- Title -->
         <TextView
@@ -43,7 +46,7 @@
                 app:layout_constraintTop_toTopOf="@id/thumbnail"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp" />
 
         <!-- Season -->
         <TextView
@@ -54,7 +57,7 @@
                 android:textColor="#BBBBBB"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@id/titleText"
-                app:layout_constraintTop_toBottomOf="@id/titleText"/>
+                app:layout_constraintTop_toBottomOf="@id/titleText" />
 
         <!-- Genre-->
         <TextView
@@ -67,7 +70,7 @@
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@id/titleText"
                 app:layout_constraintTop_toBottomOf="@id/seasonText"
-                android:layout_marginTop="4dp"/>
+                android:layout_marginTop="4dp" />
 
         <!-- Episode Count -->
         <TextView
@@ -91,8 +94,7 @@
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@id/titleText"
                 app:layout_constraintTop_toBottomOf="@id/episodeCountText"
-                android:layout_marginTop="5dp"/>
-
+                android:layout_marginTop="5dp" />
 
         <!-- Description -->
         <TextView
@@ -108,7 +110,7 @@
                 app:layout_constraintStart_toStartOf="@id/titleText"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="4dp"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginEnd="16dp" />
 
         <Button
                 android:id="@+id/toggleDescriptionButton"
@@ -119,4 +121,15 @@
                 app:layout_constraintStart_toStartOf="@id/descriptionText"
                 android:layout_marginTop="8dp" />
 
+        <!-- Episode RecyclerView -->
+        <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/episodeFragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/toggleDescriptionButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

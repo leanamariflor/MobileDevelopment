@@ -11,6 +11,9 @@ interface ApiService {
 
     @GET("api/v2/hianime/anime/{animeId}")
     fun getAnimeDetails(@Path("animeId") animeId: String): Call<AnimeResponse>
+
+    @GET("api/v2/hianime/anime/{animeId}/episodes")
+    fun getAnimeEpisodes(@Path("animeId") animeId: String): Call<EpisodeResponse>
 }
 
 data class HomeResponse(
