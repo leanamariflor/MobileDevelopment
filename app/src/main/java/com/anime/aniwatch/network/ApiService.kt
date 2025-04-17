@@ -4,6 +4,7 @@ import com.anime.aniwatch.data.Anime
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface ApiService {
     @GET("api/v2/hianime/home")
@@ -14,6 +15,9 @@ interface ApiService {
 
     @GET("api/v2/hianime/anime/{animeId}/episodes")
     fun getAnimeEpisodes(@Path("animeId") animeId: String): Call<EpisodeResponse>
+
+    @GET("api/v2/hianime/episode/sources")
+    fun getEpisodeSources(@Query("animeEpisodeId") episodeId: String): Call<EpisodeSourceResponse>
 }
 
 data class HomeResponse(

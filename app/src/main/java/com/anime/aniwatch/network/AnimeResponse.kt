@@ -59,3 +59,34 @@ data class Episode(
     val number: Int,
     val isFiller: Boolean
 )
+data class EpisodeSourceResponse(
+    val success: Boolean,
+    val data: EpisodeSourceData
+)
+
+data class EpisodeSourceData(
+    val headers: Map<String, String>,
+    val tracks: List<Track>,
+    val intro: TimeRange?,
+    val outro: TimeRange?,
+    val sources: List<Source>,
+    val anilistID: Int,
+    val malID: Int
+)
+
+data class Track(
+    val file: String,
+    val label: String,
+    val kind: String,
+    val default: Boolean = false
+)
+
+data class TimeRange(
+    val start: Int,
+    val end: Int
+)
+
+data class Source(
+    val url: String,
+    val type: String
+)

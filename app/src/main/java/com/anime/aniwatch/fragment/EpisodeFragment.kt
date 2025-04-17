@@ -1,5 +1,6 @@
 package com.anime.aniwatch.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
+import com.anime.aniwatch.activities.PlayerActivity
 import com.anime.aniwatch.adapter.EpisodeAdapter
 import com.anime.aniwatch.network.ApiService
+import com.anime.aniwatch.network.Episode
 import com.anime.aniwatch.network.EpisodeResponse
 import com.anime.aniwatch.util.Constants
 import okhttp3.OkHttpClient
@@ -32,10 +35,16 @@ class EpisodeFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_episode, container, false)
         recyclerView = view.findViewById(R.id.episodeRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(context)
-        episodeAdapter = EpisodeAdapter(emptyList())
-        recyclerView.adapter = episodeAdapter
 
         val animeId = arguments?.getString("ANIME_ID") ?: ""
+        episodeAdapter = EpisodeAdapter(emptyList()) { episode ->
+            // Handle episode click
+            val intent = Intent(requireContext(), PlayerActivity::class.java)
+            intent.putExtra("EPISODE_ID", episode.episodeId) // Pass episode ID
+            startActivity(intent)
+        }
+        recyclerView.adapter = episodeAdapter
+
         fetchEpisodes(animeId)
 
         return view

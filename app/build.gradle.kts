@@ -89,4 +89,7 @@ dependencies {
 
     // 🔹 Kotlin Coroutines
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    //exoplayer
+    implementation("com.google.android.exoplayer:exoplayer:2.19.0")
 }

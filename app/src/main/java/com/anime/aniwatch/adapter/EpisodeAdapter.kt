@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.network.Episode
 
-class EpisodeAdapter(private var episodes: List<Episode>) :
-    RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
+class EpisodeAdapter(
+    private var episodes: List<Episode>,
+    private val onEpisodeClick: (Episode) -> Unit // Click listener
+) : RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
 
     class EpisodeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val episodeNumber: TextView = view.findViewById(R.id.episodeNumber)
@@ -26,6 +28,11 @@ class EpisodeAdapter(private var episodes: List<Episode>) :
         val episode = episodes[position]
         holder.episodeNumber.text = "Episode ${episode.number}"
         holder.episodeTitle.text = episode.title
+
+        // Set click listener
+        holder.itemView.setOnClickListener {
+            onEpisodeClick(episode)
+        }
     }
 
     override fun getItemCount(): Int = episodes.size
