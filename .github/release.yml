@@ -1,0 +1,49 @@
+name: Create Release
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Set up Java (required for Gradle)
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Extract version from build.gradle.kts
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[0-9.]+(?=")' app/build.gradle.kts)
+          echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
+
+      # Create a tag
+      - name: Create tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${{ env.VERSION_NAME }}" -m "Release v${{ env.VERSION_NAME }}"
+          git push origin "v${{ env.VERSION_NAME }}"
+
+      # Create a release
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        with:
+          tag_name: "v${{ env.VERSION_NAME }}"
+          release_name: "v${{ env.VERSION_NAME }}"
+          body: "Release version ${{ env.VERSION_NAME }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
