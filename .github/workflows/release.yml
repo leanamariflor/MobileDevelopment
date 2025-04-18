@@ -39,8 +39,7 @@ jobs:
       # Delete existing tag from remote (if it exists)
       - name: Delete existing tag
         run: |
-          if git rev-parse "v${{ env.VERSION_NAME }}" >/dev/null 2>&1; then
-            git tag -d "v${{ env.VERSION_NAME }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/v${{ env.VERSION_NAME }}"; then
             git push --delete origin "v${{ env.VERSION_NAME }}"
           fi
 
