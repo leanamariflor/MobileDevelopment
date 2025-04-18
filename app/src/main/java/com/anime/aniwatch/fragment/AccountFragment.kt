@@ -117,10 +117,19 @@ class AccountFragment : Fragment() {
     }
 
     private fun logoutUser() {
-        val sharedPreferences = requireContext().getSharedPreferences("loginPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val savedEmail = sharedPreferences.getString("email", "") ?: ""
+        val savedPassword = sharedPreferences.getString("password", "") ?: ""
+        val savedRememberMe = sharedPreferences.getBoolean("isLoggedIn", false)
         sharedPreferences.edit().apply {
-            remove("userEmail")
-            remove("userPassword")
+            clear()
+            putString("email", savedEmail)
+            putString("password", savedPassword)
+            if(savedRememberMe) {
+                putBoolean("isLoggedIn", true)
+            } else {
+                putBoolean("isLoggedIn", false)
+            }
             apply()
         }
 

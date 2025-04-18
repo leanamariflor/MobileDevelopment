@@ -18,6 +18,9 @@ interface ApiService {
 
     @GET("api/v2/hianime/episode/sources")
     fun getEpisodeSources(@Query("animeEpisodeId") episodeId: String): Call<EpisodeSourceResponse>
+
+    @GET("api/v2/hianime/search")
+    fun searchAnime(@Query("q") query: String): Call<SearchResponse>
 }
 
 data class HomeResponse(

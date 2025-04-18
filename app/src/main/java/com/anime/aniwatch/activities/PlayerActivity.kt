@@ -77,12 +77,21 @@ class PlayerActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_FULLSCREEN)
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        playerView.subtitleView?.apply {
+            setPadding(0, 0, 0, 150)
+        }
     }
 
     private fun exitFullscreen() {
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        // Reset SubtitleView position for normal mode
+        playerView.subtitleView?.apply {
+            setPadding(0, 0, 0, 50)
+        }
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

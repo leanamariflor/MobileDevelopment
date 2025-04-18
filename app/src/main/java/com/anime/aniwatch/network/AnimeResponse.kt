@@ -1,5 +1,6 @@
 package com.anime.aniwatch.network
 
+import com.anime.aniwatch.data.Anime
 import com.anime.aniwatch.data.Episodes
 
 data class AnimeResponse(
@@ -89,4 +90,13 @@ data class TimeRange(
 data class Source(
     val url: String,
     val type: String
+)
+
+data class SearchResponse(
+    val success: Boolean,
+    val data: SearchData
+)
+
+data class SearchData(
+    val animes: List<Anime>
 )

@@ -37,7 +37,6 @@ class DayFragment : Fragment() {
         shimmerLayout = view.findViewById(R.id.shimmerLayout)
         recyclerView = view.findViewById(R.id.recyclerView)
 
-        // Set GridLayoutManager with 2 columns
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         homeViewModel.dayAnimeList.observe(viewLifecycleOwner) { animeList ->

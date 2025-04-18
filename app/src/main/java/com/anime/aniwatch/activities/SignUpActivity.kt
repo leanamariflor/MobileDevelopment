@@ -1,15 +1,19 @@
 package com.anime.aniwatch.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.anime.aniwatch.databinding.ActivitySignUpBinding
+import com.google.firebase.auth.FirebaseAuth
 import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
+    private lateinit var auth: FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +21,8 @@ class SignUpActivity : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
+        auth = FirebaseAuth.getInstance()
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
         binding.loginRedirectText.setOnClickListener {
             Toast.makeText(this, "Navigating to Sign In", Toast.LENGTH_SHORT).show()
@@ -32,14 +37,20 @@ class SignUpActivity : AppCompatActivity() {
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
                 if (isValidEmail(email)) {
                     if (password == confirmPassword) {
-                        val editor = sharedPreferences.edit()
-                        editor.putString("email", email)
-                        editor.putString("password", password)
-                        editor.apply()
-
-                        Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show()
-                        startActivity(Intent(this, SignInActivity::class.java))
-                        finish()
+                        auth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val editor = sharedPreferences.edit()
+                                    editor.putString("email", email)
+                                    editor.putString("password", password)
+                                    editor.apply()
+                                    Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, SignInActivity::class.java))
+                                    finish()
+                                } else {
+                                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                     } else {
                         Toast.makeText(this, "Password does not match.", Toast.LENGTH_SHORT).show()
                     }
@@ -55,6 +66,7 @@ class SignUpActivity : AppCompatActivity() {
     private fun isValidEmail(email: String): Boolean {
         val emailPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@" +
                 "(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$"
-        return Pattern.compile(emailPattern).matcher(email).matches()
+        val pattern = Pattern.compile(emailPattern)
+        return pattern.matcher(email).matches()
     }
 }
