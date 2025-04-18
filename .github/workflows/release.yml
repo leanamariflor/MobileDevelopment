@@ -64,13 +64,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+      # Determine APK path and name
+      - name: Set APK file paths
+        id: apk_paths
+        run: |
+          if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then
+            echo "APK_PATH=app/build/outputs/apk/release/app-release.apk" >> $GITHUB_ENV
+            echo "APK_NAME=app-release-v${{ env.VERSION_NAME }}.apk" >> $GITHUB_ENV
+          else
+            echo "APK_PATH=app/build/outputs/apk/release/app-release-unsigned.apk" >> $GITHUB_ENV
+            echo "APK_NAME=app-release-unsigned-v${{ env.VERSION_NAME }}.apk" >> $GITHUB_ENV
+          fi
+
       # Upload APK to the release
       - name: Upload APK
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: |
-            $(if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then echo "app/build/outputs/apk/release/app-release.apk"; else echo "app/build/outputs/apk/release/app-release-unsigned.apk"; fi)
-          asset_name: |
-            $(if [ -f "app/build/outputs/apk/release/app-release.apk" ]; then echo "app-release-v${{ env.VERSION_NAME }}.apk"; else echo "app-release-unsigned-v${{ env.VERSION_NAME }}.apk"; fi)
+          asset_path: ${{ env.APK_PATH }}
+          asset_name: ${{ env.APK_NAME }}
           asset_content_type: application/vnd.android.package-archive
