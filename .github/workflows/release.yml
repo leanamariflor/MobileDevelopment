@@ -42,6 +42,12 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
+      # Decode the JKS file
+      - name: Decode JKS file
+        run: |
+          echo "${{ secrets.JKS_BASE64 }}" | base64 -d > jvb/dainsleif.jks
+
+
       # Build the app
       - name: Build APK
         run: ./gradlew assembleRelease

@@ -23,10 +23,10 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file("C:/Users/USER/Downloads/jvb/dainsleif.jks")
-            storePassword = "1Barcenas"
-            keyAlias = "key0"
-            keyPassword = "1Barcenas"
+            storeFile = file(project.properties["storeFilePath"] as String)
+            storePassword = project.properties["storePassword"] as String
+            keyAlias = project.properties["keyAlias"] as String
+            keyPassword = project.properties["keyPassword"] as String
         }
     }
 
