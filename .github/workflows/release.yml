@@ -25,7 +25,7 @@ jobs:
       - name: Extract version
         id: extract_version
         run: |
-          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[0-9.]+(?=")' app/build.gradle.kts)
+          VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[0-9.]+' app/build.gradle.kts)
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
       # Add permission step before running Gradle
@@ -51,19 +51,6 @@ jobs:
           git tag -a "v${{ env.VERSION_NAME }}" -m "Release v${{ env.VERSION_NAME }}"
           git push origin "v${{ env.VERSION_NAME }}"
 
-      # Create a release
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        with:
-          tag_name: "v${{ env.VERSION_NAME }}"
-          release_name: "v${{ env.VERSION_NAME }}"
-          body: "Release version ${{ env.VERSION_NAME }}"
-          draft: false
-          prerelease: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-
       # Determine APK path and name
       - name: Set APK file paths
         id: apk_paths
@@ -74,13 +61,16 @@ jobs:
           else
             echo "APK_PATH=app/build/outputs/apk/release/app-release-unsigned.apk" >> $GITHUB_ENV
             echo "APK_NAME=app-release-unsigned-v${{ env.VERSION_NAME }}.apk" >> $GITHUB_ENV
-          fi
 
-      # Upload APK to the release
-      - name: Upload APK
-        uses: actions/upload-release-asset@v1
+      # Create GitHub Release and upload APK
+      - name: Create GitHub Release and Upload APK
+        uses: softprops/action-gh-release@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.APK_PATH }}
-          asset_name: ${{ env.APK_NAME }}
-          asset_content_type: application/vnd.android.package-archive
+          tag_name: "v${{ env.VERSION_NAME }}"
+          name: "v${{ env.VERSION_NAME }}"
+          body: "Release version ${{ env.VERSION_NAME }}"
+          files: ${{ env.APK_PATH }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
