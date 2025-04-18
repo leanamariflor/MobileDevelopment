@@ -28,6 +28,10 @@ jobs:
           VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[0-9.]+(?=")' app/build.gradle.kts)
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
+      # Build the app
+      - name: Build APK
+        run: ./gradlew assembleRelease
+
       # Create a tag
       - name: Create tag
         run: |
@@ -38,6 +42,7 @@ jobs:
 
       # Create a release
       - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1
         with:
           tag_name: "v${{ env.VERSION_NAME }}"
@@ -47,3 +52,12 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+      # Upload APK to the release
+      - name: Upload APK
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/release/app-release.apk
+          asset_name: app-release-v${{ env.VERSION_NAME }}.apk
+          asset_content_type: application/vnd.android.package-archive
