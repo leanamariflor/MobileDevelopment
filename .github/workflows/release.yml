@@ -28,6 +28,10 @@ jobs:
           VERSION_NAME=$(grep -oP 'versionName\s*=\s*"\K[0-9.]+(?=")' app/build.gradle.kts)
           echo "VERSION_NAME=$VERSION_NAME" >> $GITHUB_ENV
 
+      # Add permission step before running Gradle
+      - name: Grant execute permission for Gradlew
+        run: chmod +x ./gradlew
+
       # Build the app
       - name: Build APK
         run: ./gradlew assembleRelease
