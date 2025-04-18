@@ -36,11 +36,13 @@ jobs:
       - name: Build APK
         run: ./gradlew assembleRelease
 
-      # Delete existing tag from remote
+      # Delete existing tag from remote (if it exists)
       - name: Delete existing tag
         run: |
-          git tag -d "v${{ env.VERSION_NAME }}"
-          git push --delete origin "v${{ env.VERSION_NAME }}"
+          if git rev-parse "v${{ env.VERSION_NAME }}" >/dev/null 2>&1; then
+            git tag -d "v${{ env.VERSION_NAME }}"
+            git push --delete origin "v${{ env.VERSION_NAME }}"
+          fi
 
       # Create and push the new tag
       - name: Create tag
