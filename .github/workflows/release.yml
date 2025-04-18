@@ -42,6 +42,10 @@ jobs:
       - name: Grant execute permission for Gradlew
         run: chmod +x ./gradlew
 
+        # Ensure the directory exists
+      - name: Create directory for JKS
+        run: mkdir -p jvb
+
       # Decode the JKS file
       - name: Decode JKS file
         run: |
