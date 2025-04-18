@@ -61,6 +61,7 @@ jobs:
           else
             echo "APK_PATH=app/build/outputs/apk/release/app-release-unsigned.apk" >> $GITHUB_ENV
             echo "APK_NAME=app-release-unsigned-v${{ env.VERSION_NAME }}.apk" >> $GITHUB_ENV
+          fi
 
       # Create GitHub Release and upload APK
       - name: Create GitHub Release and Upload APK
