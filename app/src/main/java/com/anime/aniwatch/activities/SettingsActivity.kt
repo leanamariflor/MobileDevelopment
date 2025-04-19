@@ -72,9 +72,38 @@ class SettingsActivity : AppCompatActivity() {
             listOf(getString(R.string.policy_title6), getString(R.string.policy_section_6_desc))
         )
 
+        val  terms = listOf(
+            listOf(getString(R.string.terms_title1), getString(R.string.terms_section_1_desc)),
+            listOf(getString(R.string.terms_title2), getString(R.string.terms_section_2_desc)),
+            listOf(getString(R.string.terms_title3), getString(R.string.terms_section_3_desc)),
+            listOf(getString(R.string.terms_title4), getString(R.string.terms_section_4_desc)),
+            listOf(getString(R.string.terms_title5), getString(R.string.terms_section_5_desc)),
+            listOf(getString(R.string.terms_title6), getString(R.string.terms_section_6_desc)),
+            listOf(getString(R.string.terms_title7), getString(R.string.terms_section_7_desc)),
+            listOf(getString(R.string.terms_title8), getString(R.string.terms_section_8_desc)),
+        )
+
+        val  third = listOf(
+            listOf(getString(R.string.third_party_title1), getString(R.string.third_party_desc1)),
+            listOf(getString(R.string.third_party_title2), getString(R.string.third_party_desc2)),
+            listOf(getString(R.string.third_party_title3), getString(R.string.third_party_desc3)),
+            listOf(getString(R.string.third_party_title4), getString(R.string.third_party_desc4)),
+            listOf(getString(R.string.third_party_title5), getString(R.string.third_party_desc5)),
+            listOf(getString(R.string.third_party_title6), getString(R.string.third_party_desc6)),
+            listOf(getString(R.string.third_party_title7), getString(R.string.third_party_desc7)),
+            listOf(getString(R.string.third_party_title8), getString(R.string.third_party_desc8)),
+            listOf(getString(R.string.third_party_title9), getString(R.string.third_party_desc9)),
+            listOf(getString(R.string.third_party_title10), getString(R.string.third_party_desc10))
+
+            )
+
         // Adding groups to the data
         data["Developers"] = developers
         data["Privacy Policy"] = privacy
+        data["Terms of Service"] = terms
+        data["Third-party notices"] = third
+
+
 
         return data
     }

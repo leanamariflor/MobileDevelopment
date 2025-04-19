@@ -16,8 +16,6 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
                 android:text="OUR "
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
@@ -26,15 +24,12 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
                 android:text="VISION"
                 android:textColor="#A59FED"
                 android:textSize="18sp"
                 android:textStyle="bold" />
     </LinearLayout>
 
-    <!-- Vision Text View -->
     <TextView
             android:id="@+id/vision"
             android:layout_width="wrap_content"
@@ -47,9 +42,7 @@
             android:paddingBottom="50dp"
             android:justificationMode="inter_word" />
 
-
-
-    <!-- Vision Section -->
+    <!-- About Developers Section -->
     <LinearLayout
             android:id="@+id/aboutDevelopersLayout"
             android:layout_width="match_parent"
@@ -60,8 +53,6 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
                 android:text="ABOUT THE "
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
@@ -70,8 +61,6 @@
         <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="16dp"
                 android:text="DEVELOPERS"
                 android:textColor="#A59FED"
                 android:textSize="18sp"

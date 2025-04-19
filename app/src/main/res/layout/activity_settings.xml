@@ -5,7 +5,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+
         tools:context=".activities.SettingsActivity">
 
     <!-- Toolbar -->
@@ -21,6 +21,7 @@
 
     <!-- ExpandableListView -->
     <ExpandableListView
+            android:background="@color/black"
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
             android:layout_height="0dp"

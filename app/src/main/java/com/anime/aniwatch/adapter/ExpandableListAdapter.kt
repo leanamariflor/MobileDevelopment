@@ -29,10 +29,17 @@ class ExpandableListAdapter(
         data[headers[groupPosition]]!![childPosition]
 
     override fun getChildType(groupPosition: Int, childPosition: Int): Int {
-        return if (headers[groupPosition] == "Privacy Policy") 0 else 1
+        return when (headers[groupPosition]) {
+            "Privacy Policy" -> 0
+            "Terms of Service" -> 1
+            "Third-party notices" -> 2
+
+            else -> 3 // Developers
+        }
     }
 
-    override fun getChildTypeCount(): Int = 2
+
+    override fun getChildTypeCount(): Int = 4
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
@@ -76,7 +83,43 @@ class ExpandableListAdapter(
             }
 
             view
-        } else {
+        }
+       else if (groupTitle == "Terms of Service") {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.privacy_policy, parent, false)
+            // Ensure child has at least 2 elements
+            if (child.size >= 2) {
+                val titleTextView: TextView = view.findViewById(R.id.policy_title)
+                val descriptionTextView: TextView = view.findViewById(R.id.policyDescription)
+
+                titleTextView.text = child[0]
+                descriptionTextView.text = child[1]
+            } else {
+                // Handle the case where child data is not as expected
+                Log.e("ExpandableListAdapter", "Child data for Privacy Policy is not valid: $child")
+            }
+
+            view
+        }
+
+        else if (groupTitle == "Third-party notices") {
+            val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.privacy_policy, parent, false)
+
+            // Ensure child has at least 2 elements
+            if (child.size >= 2) {
+                val titleTextView: TextView = view.findViewById(R.id.policy_title)
+                val descriptionTextView: TextView = view.findViewById(R.id.policyDescription)
+
+                titleTextView.text = child[0]
+                descriptionTextView.text = child[1]
+            } else {
+                // Handle the case where child data is not as expected
+                Log.e("ExpandableListAdapter", "Child data for Privacy Policy is not valid: $child")
+            }
+            view
+        }
+
+
+        else {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.activity_developers, parent, false)
 
             // Ensure child has at least 2 elements
