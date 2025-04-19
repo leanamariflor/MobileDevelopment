@@ -3,19 +3,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="16dp"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true">
 
     <TextView
             android:id="@+id/episodeNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#FFFFFF" />
+            android:textSize="15sp"
+            android:textColor="#FFDDDDDD"
+            android:textStyle="bold"
+            android:letterSpacing="0.02" />
 
     <TextView
             android:id="@+id/episodeTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#BBBBBB" />
+            android:textSize="13sp"
+            android:textColor="#FFAAAAAA"
+            android:layout_marginTop="2dp"
+            android:letterSpacing="0.01" />
+
+    <!-- Divider Line -->
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="#22FFFFFF" />
 </LinearLayout>

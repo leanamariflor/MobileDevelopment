@@ -31,6 +31,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -38,14 +39,24 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playerView: StyledPlayerView
     private var playbackPosition: Long = 0
     private var playWhenReady: Boolean = true
+    private lateinit var backButton: ImageView
+
 
     private var isFullscreen = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
         playerView = findViewById(R.id.playerView)
+
+        backButton = findViewById(R.id.backButton)
+
+
+        // Set back button functionality
+        backButton.setOnClickListener { finish() }
+
 
         // Set up fullscreen button click listener
         playerView.setControllerOnFullScreenModeChangedListener { isFullScreen ->
