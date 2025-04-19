@@ -38,9 +38,11 @@ class EpisodeFragment : Fragment() {
 
         val animeId = arguments?.getString("ANIME_ID") ?: ""
         episodeAdapter = EpisodeAdapter(emptyList()) { episode ->
-            // Handle episode click
-            val intent = Intent(requireContext(), PlayerActivity::class.java)
-            intent.putExtra("EPISODE_ID", episode.episodeId) // Pass episode ID
+            val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+                putExtra("EPISODE_ID", episode.episodeId)
+                putExtra("ANIME_ID", animeId)
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            }
             startActivity(intent)
         }
         recyclerView.adapter = episodeAdapter

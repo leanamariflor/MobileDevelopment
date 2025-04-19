@@ -1,5 +1,6 @@
 package com.anime.aniwatch.activities
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
@@ -31,6 +32,10 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import com.anime.aniwatch.fragment.EpisodeFragment
+import com.anime.aniwatch.network.AnimeResponse
+import com.anime.aniwatch.network.EpisodeResponse
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -44,6 +49,10 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
+
+        val animeTitleText: TextView = findViewById(R.id.animeTitleText)
+        val episodeTitleText: TextView = findViewById(R.id.episodeTitleText)
+        val episodeNumberText: TextView = findViewById(R.id.episodeNumberText)
 
         playerView = findViewById(R.id.playerView)
 
@@ -59,6 +68,7 @@ class PlayerActivity : AppCompatActivity() {
 
         // Rest of your existing onCreate code
         val episodeId = intent.getStringExtra("EPISODE_ID")
+        val animeId = intent.getStringExtra("ANIME_ID")
         if (episodeId.isNullOrEmpty()) {
             Toast.makeText(this, "Invalid episode ID", Toast.LENGTH_SHORT).show()
             finish()
@@ -66,6 +76,11 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         fetchEpisodeSources(episodeId)
+        loadEpisodeFragment(animeId.toString())
+        if (animeId != null && episodeId != null) {
+            fetchEpisodeDetails(animeId, episodeId, animeTitleText, episodeTitleText, episodeNumberText)
+        }
+        Toast.makeText(this, "Anime ID: $animeId", Toast.LENGTH_SHORT).show()
     }
 
     private fun enterFullscreen() {
@@ -88,7 +103,6 @@ class PlayerActivity : AppCompatActivity() {
 
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        // Reset SubtitleView position for normal mode
         playerView.subtitleView?.apply {
             setPadding(0, 0, 0, 50)
         }
@@ -225,6 +239,21 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            val episodeId = it.getStringExtra("EPISODE_ID")
+            val animeId = it.getStringExtra("ANIME_ID")
+
+            if (!episodeId.isNullOrEmpty()) {
+                fetchEpisodeSources(episodeId)
+                if (animeId != null) {
+                    fetchEpisodeDetails(animeId, episodeId, findViewById(R.id.animeTitleText), findViewById(R.id.episodeTitleText), findViewById(R.id.episodeNumberText))
+                }
+            }
+        }
+    }
+
     override fun onStop() {
         super.onStop()
         releasePlayer()
@@ -238,5 +267,73 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
+    }
+
+    override fun onBackPressed() {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            // Change orientation to portrait
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        } else {
+            super.onBackPressed()
+        }
+    }
+
+    private fun loadEpisodeFragment(animeId: String) {
+        val episodeFragment = EpisodeFragment().apply {
+            arguments = Bundle().apply {
+                putString("ANIME_ID", animeId)
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.episodeFragmentContainer, episodeFragment)
+            .commit()
+    }
+
+    private fun fetchEpisodeDetails(
+        animeId: String,
+        episodeId: String,
+        animeTitleText: TextView,
+        episodeTitleText: TextView,
+        episodeNumberText: TextView
+    ) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        // Fetch anime details
+        apiService.getAnimeDetails(animeId).enqueue(object : Callback<AnimeResponse> {
+            override fun onResponse(call: Call<AnimeResponse>, response: Response<AnimeResponse>) {
+                if (response.isSuccessful) {
+                    val animeName = response.body()?.data?.anime?.info?.name
+                    animeTitleText.text = "$animeName"
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeResponse>, t: Throwable) {
+                Toast.makeText(this@PlayerActivity, "Failed to load anime details", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+        apiService.getAnimeEpisodes(animeId).enqueue(object : Callback<EpisodeResponse> {
+            override fun onResponse(call: Call<EpisodeResponse>, response: Response<EpisodeResponse>) {
+                if (response.isSuccessful) {
+                    val episodes = response.body()?.data?.episodes ?: return
+                    val episode = episodes.find { it.episodeId == episodeId }
+
+                    if (episode != null) {
+                        episodeTitleText.text = "${episode.title}"
+                        episodeNumberText.text = "Episode: ${episode.number}"
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<EpisodeResponse>, t: Throwable) {
+                Toast.makeText(this@PlayerActivity, "Failed to load episode details", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }

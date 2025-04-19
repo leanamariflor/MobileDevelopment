@@ -19,6 +19,8 @@
         <item>Black Clover is set in a world where people are born with the ability to use magic, the story follows Asta, a young boy without any magic power who is given a rare grimoire that grants him anti-magic abilities. With his fellow mages from the Black Bulls, Asta plans to become the next Wizard King.</item>
     </string-array>
     <string name="title_activity_player">PlayerActivity</string>
+    <string name="episode_title">Episode Title</string>
+    <string name="episode_number">Episode Number</string>
 
 
 </resources>
