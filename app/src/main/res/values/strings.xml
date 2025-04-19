@@ -17,24 +17,23 @@
 
 
     <!-- Privacy Policy Strings -->
-    <string name="policy_title">Privacy Policy</string>
 
-    <string name="policy_section_1_title">1. Information Collection</string>
+    <string name="policy_title1">1. Information Collection</string>
     <string name="policy_section_1_desc">We collect personal information such as your name, email address, and payment details when you create an account or make purchases. We also gather usage data, including your IP address and device information, to enhance your experience.</string>
 
-    <string name="policy_section_2_title">2. Use of Information</string>
+    <string name="policy_title2">2. Use of Information</string>
     <string name="policy_section_2_desc">Your information is used to provide and improve our services, process transactions, and communicate with you about updates and promotions.</string>
 
-    <string name="policy_section_3_title">3. Data Sharing</string>
+    <string name="policy_title3">3. Data Sharing</string>
     <string name="policy_section_3_desc">We do not sell your personal information. We may share your data with trusted third-party service providers to assist with operations, but only as necessary and in compliance with applicable laws.</string>
 
-    <string name="policy_section_4_title">4. User Rights</string>
+    <string name="policy_title4">4. User Rights</string>
     <string name="policy_section_4_desc">You have the right to access, correct, or delete your personal information. You can also opt-out of marketing communications at any time.</string>
 
-    <string name="policy_section_5_title">5. Security</string>
+    <string name="policy_title5">5. Security</string>
     <string name="policy_section_5_desc">We implement reasonable security measures to protect your data from unauthorized access and breaches.</string>
 
-    <string name="policy_section_6_title">6. Changes to Policy</string>
+    <string name="policy_title6">6. Changes to Policy</string>
     <string name="policy_section_6_desc">We may update our privacy policy periodically. Any changes will be communicated through the app.</string>
 
 

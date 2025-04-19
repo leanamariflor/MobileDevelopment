@@ -7,13 +7,13 @@
 
     <!-- Vision Section -->
     <LinearLayout
+            android:id="@+id/visionLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal">
 
         <TextView
-                android:id="@+id/visionLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -24,7 +24,6 @@
                 android:textStyle="bold" />
 
         <TextView
-                android:id="@+id/visionLabel1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
