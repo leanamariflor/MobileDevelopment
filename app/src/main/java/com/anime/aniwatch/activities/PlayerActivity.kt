@@ -39,6 +39,10 @@ import com.anime.aniwatch.network.EpisodeResponse
 
 class PlayerActivity : AppCompatActivity() {
 
+    private var mediaSourceUrl: String? = null
+    private var subtitleTracks: List<Track> = emptyList()
+    private var referer: String = "https://megacloud.blog/"
+
     private var exoPlayer: ExoPlayer? = null
     private lateinit var playerView: StyledPlayerView
     private var playbackPosition: Long = 0
@@ -155,6 +159,14 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer(hlsUrl: String, subtitleTracks: List<Track>, referer: String) {
+        mediaSourceUrl = hlsUrl
+        this.subtitleTracks = subtitleTracks
+        this.referer = referer
+
+        if (exoPlayer != null) {
+            exoPlayer?.stop()
+            exoPlayer?.release()
+        }
         exoPlayer = ExoPlayer.Builder(this).build()
         exoPlayer?.playWhenReady = playWhenReady
         playerView.player = exoPlayer
@@ -254,16 +266,32 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        exoPlayer?.let { player ->
+            playbackPosition = player.currentPosition
+            playWhenReady = player.playWhenReady
+        }
+        releasePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (exoPlayer == null) {
+            exoPlayer = ExoPlayer.Builder(this).build()
+            playerView.player = exoPlayer
+            exoPlayer?.playWhenReady = playWhenReady
+            exoPlayer?.seekTo(playbackPosition)
+
+            mediaSourceUrl?.let { url ->
+                preparePlayer(url, subtitleTracks, referer)
+            }
+        }
+    }
     override fun onStop() {
         super.onStop()
         releasePlayer()
     }
-
-    override fun onPause() {
-        super.onPause()
-        releasePlayer()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
