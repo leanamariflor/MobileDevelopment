@@ -17,7 +17,8 @@ import java.io.IOException
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: SplashBinding
-    private val versionUrl = "https://raw.githubusercontent.com/your-repo/your-project/main/version.json"
+    private val versionUrl = "https://jonvicbarcenas.github.io/MobileDevelopment/version.json"
+    private var latestVersion: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +38,25 @@ class SplashActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string() // Use the body() method
                     val jsonObject = JSONObject(responseBody ?: "")
-                    val latestVersion = jsonObject.getString("version")
+                    latestVersion = jsonObject.getString("version").removePrefix("v")
 
                     runOnUiThread {
                         if (latestVersion != BuildConfig.VERSION_NAME) {
                             showUpdatePrompt()
+                            Toast.makeText(
+                                this,
+                                "Update available: $latestVersion" +
+                                        "\nCurrent version: ${BuildConfig.VERSION_NAME}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         } else {
                             proceedToNextScreen()
+                            Toast.makeText(
+                                this,
+                                "Update available: $latestVersion" +
+                                        "\nCurrent version: ${BuildConfig.VERSION_NAME}",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 } else {
@@ -65,7 +78,7 @@ class SplashActivity : AppCompatActivity() {
             .setPositiveButton("Update") { _, _ ->
                 // Redirect to app store or update URL
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = android.net.Uri.parse("https://your-app-store-link")
+                intent.data = android.net.Uri.parse("https://github.com/jonvicbarcenas/MobileDevelopment/releases/download/$latestVersion/app-release.apk")
                 startActivity(intent)
                 finish()
             }
