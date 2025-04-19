@@ -52,6 +52,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -99,6 +100,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("com.squareup.okhttp3:okhttp:4.2.2")
 
     // 🔹 Kotlin Coroutines
     implementation("com.facebook.shimmer:shimmer:0.5.0")
