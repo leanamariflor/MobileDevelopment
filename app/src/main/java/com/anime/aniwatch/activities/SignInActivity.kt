@@ -1,6 +1,6 @@
 package com.anime.aniwatch.activities
 
-import android.content.Context
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.drawable.ColorDrawable
@@ -10,21 +10,18 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
+import com.anime.aniwatch.R
 import com.anime.aniwatch.databinding.ActivitySignInBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.anime.aniwatch.R
-import com.anime.aniwatch.activities.MainActivity
-import com.anime.aniwatch.activities.SignUpActivity
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import java.util.concurrent.TimeUnit
 
 class SignInActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignInBinding
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var rememberCheckBox: CheckBox
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,16 +30,30 @@ class SignInActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-
-        // Initialize SharedPreferences instance
         sharedPrefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
-        rememberCheckBox = findViewById(R.id.rememberMeCheckbox)
+        // Initialize Remember Me
+        val rememberMe = sharedPrefs.getBoolean("rememberMe", false)
+        binding.rememberMeCheckbox.isChecked = rememberMe
 
-        checkRememberMe()
+        // Session check
+        val sessionExpiration = sharedPrefs.getLong("sessionExpiration", 0L)
+        val isSessionValid = System.currentTimeMillis() < sessionExpiration
 
+        if (rememberMe) {
+            val email = sharedPrefs.getString("email", "") ?: ""
+            val password = sharedPrefs.getString("password", "") ?: ""
+            binding.signinEmail.setText(email)
+            binding.signinPassword.setText(password)
 
+            if (email.isNotEmpty() && password.isNotEmpty() && isSessionValid) {
+                autoLogin(email, password)
+            }
+        }
 
+        binding.rememberMeCheckbox.setOnCheckedChangeListener { _, isChecked ->
+            sharedPrefs.edit().putBoolean("rememberMe", isChecked).apply()
+        }
 
         binding.signinButton.setOnClickListener {
             val email = binding.signinEmail.text.toString()
@@ -52,15 +63,26 @@ class SignInActivity : AppCompatActivity() {
                 firebaseAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Save login credentials and "Remember Me" state
-                            saveLoginCredentials(email, password, rememberCheckBox.isChecked)
+                            val expirationTime = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                            val editor = sharedPrefs.edit()
+                            editor.putLong("sessionExpiration", expirationTime)
 
-                            val intent = Intent(this, MainActivity::class.java)
-                            startActivity(intent)
+                            if (binding.rememberMeCheckbox.isChecked) {
+                                editor.putString("email", email)
+                                editor.putString("password", password)
+                                editor.putBoolean("rememberMe", true)
+                            } else {
+                                editor.remove("email")
+                                editor.remove("password")
+                                editor.putBoolean("rememberMe", false)
+                            }
+
+                            editor.apply()
+
+                            startActivity(Intent(this, MainActivity::class.java))
                             finish()
                         } else {
-                            val exception = task.exception?.message
-                            Toast.makeText(this, "Error: $exception", Toast.LENGTH_SHORT).show()
+                            handleSignInError(task.exception)
                         }
                     }
             } else {
@@ -69,75 +91,78 @@ class SignInActivity : AppCompatActivity() {
         }
 
         binding.forgotPassword.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            val view = layoutInflater.inflate(R.layout.forgot, null)
-            val userEmail = view.findViewById<EditText>(R.id.editBox)
-
-            builder.setView(view)
-            val dialog = builder.create()
-
-            // Handle Reset Button Click
-            view.findViewById<Button>(R.id.btnReset).setOnClickListener {
-                val email = userEmail.text.toString()
-                if (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                    firebaseAuth.sendPasswordResetEmail(email)
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    dialog.dismiss()
-                } else {
-                    Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
-                }
-            }
-
-            // Handle Cancel Button Click
-            view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
-                dialog.dismiss()
-            }
-
-            // Show the dialog with a transparent background
-            if (dialog.window != null) {
-                dialog.window!!.setBackgroundDrawable(ColorDrawable(0))
-            }
-
-            dialog.show()
+            showForgotPasswordDialog()
         }
 
         binding.signupRedirectText.setOnClickListener {
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, SignUpActivity::class.java))
         }
     }
 
-    // Save login credentials and "Remember Me" state in SharedPreferences
-    private fun saveLoginCredentials(email: String, password: String, rememberMe: Boolean) {
+    private fun autoLogin(email: String, password: String) {
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val newExpiration = System.currentTimeMillis() + TimeUnit.DAYS.toMillis(7)
+                    sharedPrefs.edit().putLong("sessionExpiration", newExpiration).apply()
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                } else {
+                    handleSignInError(task.exception)
+                }
+            }
+    }
+
+    private fun handleSignInError(exception: Exception?) {
+        if (exception is FirebaseAuthInvalidUserException) {
+            val errorCode = exception.errorCode
+            if (errorCode == "ERROR_USER_NOT_FOUND") {
+                Toast.makeText(this, "Account does not exist or has been deleted.", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Error: ${exception?.message}", Toast.LENGTH_SHORT).show()
+        }
+        clearSessionData()
+    }
+
+    private fun clearSessionData() {
         val editor = sharedPrefs.edit()
-        editor.putBoolean("isLoggedIn", true)
-        editor.putString("email", email)
-        editor.putString("password", password)
-        editor.putBoolean("rememberMe", rememberMe) // Save "Remember Me" state
+        editor.remove("sessionExpiration")
         editor.apply()
     }
 
-    // Check if "Remember Me" is active from previous session
-    private fun checkRememberMe() {
-        val isLoggedIn = sharedPrefs.getBoolean("isLoggedIn", false)
-        val rememberMe = sharedPrefs.getBoolean("rememberMe", false)
+    private fun showForgotPasswordDialog() {
+        val builder = AlertDialog.Builder(this)
+        val view = layoutInflater.inflate(R.layout.forgot, null)
+        val userEmail = view.findViewById<EditText>(R.id.editBox)
+        val btnReset = view.findViewById<Button>(R.id.btnReset)
+        val btnCancel = view.findViewById<Button>(R.id.btnCancel)
 
-        if (isLoggedIn && rememberMe) {
-            val email = sharedPrefs.getString("email", null)
-            val password = sharedPrefs.getString("password", null)
+        builder.setView(view)
+        val dialog = builder.create()
 
-            // Pre-fill the email and password fields
-            if (email != null && password != null) {
-                binding.signinEmail.setText(email)
-                binding.signinPassword.setText(password)
-                rememberCheckBox.isChecked = true // Make sure the checkbox is checked
+        btnReset.setOnClickListener {
+            val email = userEmail.text.toString()
+            if (email.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                firebaseAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(this, "Check your email", Toast.LENGTH_SHORT).show()
+                            dialog.dismiss()
+                        } else {
+                            Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+            } else {
+                Toast.makeText(this, "Enter a valid email address.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.window?.setBackgroundDrawable(ColorDrawable(0))
+        dialog.show()
     }
 }

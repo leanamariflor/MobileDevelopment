@@ -9,6 +9,7 @@ import com.anime.aniwatch.databinding.ActivityMainBinding
 import com.anime.aniwatch.fragment.AccountFragment
 import com.anime.aniwatch.fragment.HomeFragment
 import com.anime.aniwatch.fragment.ListFragment
+import com.google.firebase.FirebaseApp
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -43,6 +45,11 @@ class MainActivity : AppCompatActivity() {
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
+
+        if (fragment is HomeFragment) {
+            fragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
+        }
+
         fragmentTransaction.replace(R.id.frame_layout, fragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
@@ -85,10 +92,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+        if (currentFragment is HomeFragment) {
+            // Update BottomNavigationView to reflect HomeFragment
+            binding.bottomNavigationView.selectedItemId = R.id.home
+            finish()
         } else {
             super.onBackPressed()
+            val newFragment = supportFragmentManager.findFragmentById(R.id.frame_layout)
+            if (newFragment is HomeFragment) {
+                binding.bottomNavigationView.selectedItemId = R.id.home
+            } else if (newFragment is ListFragment) {
+                binding.bottomNavigationView.selectedItemId = R.id.list
+            } else if (newFragment is AccountFragment) {
+                binding.bottomNavigationView.selectedItemId = R.id.account
+            }
         }
     }
 

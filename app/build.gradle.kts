@@ -13,11 +13,20 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(project.properties["storeFilePath"] as String)
+            storePassword = project.properties["storePassword"] as String
+            keyAlias = project.properties["keyAlias"] as String
+            keyPassword = project.properties["keyPassword"] as String
         }
     }
 
@@ -28,6 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -42,6 +52,7 @@ android {
     }
 
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }
@@ -72,6 +83,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.preference)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
 
     // 🔹 Testing Libraries
     testImplementation(libs.junit)
@@ -86,7 +100,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("com.squareup.okhttp3:okhttp:4.2.2")
 
     // 🔹 Kotlin Coroutines
     implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+    //exoplayer
+    implementation("com.google.android.exoplayer:exoplayer:2.19.0")
 }

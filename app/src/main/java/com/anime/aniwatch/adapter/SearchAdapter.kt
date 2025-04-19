@@ -1,4 +1,4 @@
-package com.anime.aniwatch.helpers
+package com.anime.aniwatch.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -8,16 +8,16 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.anime.aniwatch.R
-import com.anime.aniwatch.models.Movie
+import com.anime.aniwatch.data.Anime
+import com.bumptech.glide.Glide
 
-
-class MovieAdapter(
+class SearchAdapter(
     val context: Context,
-    private var movieList: MutableList<Movie>,
-    val onClickItem: (Movie) -> Unit
+    private var movieList: MutableList<Anime>,
+    val onClickItem: (Anime) -> Unit
 ) : BaseAdapter() {
 
-    private val originalList: MutableList<Movie> = ArrayList(movieList)
+    private val originalList: MutableList<Anime> = ArrayList(movieList)
 
     override fun getView(position: Int, contentView: View?, parent: ViewGroup?): View {
         val view = contentView ?: LayoutInflater.from(context).inflate(
@@ -30,7 +30,7 @@ class MovieAdapter(
         val movieImage = view.findViewById<ImageView>(R.id.movieImage)
 
         movieName.text = movie.name
-        movieImage.setImageResource(movie.imageResId)
+        Glide.with(context).load(movie.poster).into(movieImage)
 
         view.setOnClickListener {
             onClickItem(movie)
@@ -43,7 +43,7 @@ class MovieAdapter(
     override fun getItem(position: Int): Any = movieList[position]
     override fun getItemId(position: Int): Long = position.toLong()
 
-    fun updateList(newList: List<Movie>?) {
+    fun updateList(newList: List<Anime>?) {
         movieList.clear()
         if (newList.isNullOrEmpty()) {
             movieList.addAll(originalList)

@@ -175,28 +175,29 @@ class AccountFragment : Fragment() {
         dialog.show()
     }
 
+    // Only showing changes in logoutUser() to resolve conflict.
+
     private fun logoutUser() {
-        val sharedPreferences = requireContext().getSharedPreferences("loginPrefs", AppCompatActivity.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
+        val sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val savedEmail = sharedPreferences.getString("email", "") ?: ""
+        val savedPassword = sharedPreferences.getString("password", "") ?: ""
+        val isRememberMe = sharedPreferences.getBoolean("isLoggedIn", false)
 
-        val isRememberMeEnabled = sharedPreferences.getBoolean("rememberMe", false) // Preserve state
-
-        editor.remove("userEmail")
-        editor.remove("userPassword")
-
-        if (!isRememberMeEnabled) {
-            editor.remove("rememberMe")
+        sharedPreferences.edit().apply {
+            clear()
+            putString("email", savedEmail)
+            putString("password", savedPassword)
+            putBoolean("isLoggedIn", isRememberMe)
+            apply()
         }
-
-        editor.apply()
 
         auth.signOut()
 
-        // Redirect to SplashActivity after logging out
         val intent = Intent(activity, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

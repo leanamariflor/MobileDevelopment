@@ -1,5 +1,6 @@
 package com.anime.aniwatch.network
 
+import com.anime.aniwatch.data.Anime
 import com.anime.aniwatch.data.Episodes
 
 data class AnimeResponse(
@@ -41,4 +42,61 @@ data class Stats(
 data class MoreInfo(
     val genres: List<String>,
     val malscore: String
+)
+
+data class EpisodeResponse(
+    val success: Boolean,
+    val data: EpisodeData
+)
+
+data class EpisodeData(
+    val totalEpisodes: Int,
+    val episodes: List<Episode>
+)
+
+data class Episode(
+    val title: String,
+    val episodeId: String,
+    val number: Int,
+    val isFiller: Boolean
+)
+data class EpisodeSourceResponse(
+    val success: Boolean,
+    val data: EpisodeSourceData
+)
+
+data class EpisodeSourceData(
+    val headers: Map<String, String>,
+    val tracks: List<Track>,
+    val intro: TimeRange?,
+    val outro: TimeRange?,
+    val sources: List<Source>,
+    val anilistID: Int,
+    val malID: Int
+)
+
+data class Track(
+    val file: String,
+    val label: String,
+    val kind: String,
+    val default: Boolean = false
+)
+
+data class TimeRange(
+    val start: Int,
+    val end: Int
+)
+
+data class Source(
+    val url: String,
+    val type: String
+)
+
+data class SearchResponse(
+    val success: Boolean,
+    val data: SearchData
+)
+
+data class SearchData(
+    val animes: List<Anime>
 )

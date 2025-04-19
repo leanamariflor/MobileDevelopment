@@ -1,20 +1,19 @@
 package com.anime.aniwatch.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
-import com.anime.aniwatch.R
 import com.anime.aniwatch.databinding.ActivitySignUpBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.util.regex.Pattern
-
 
 class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,8 +22,7 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
-
-
+        sharedPreferences = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
         // Signup button click listener
         binding.signupButton.setOnClickListener {
@@ -33,17 +31,20 @@ class SignUpActivity : AppCompatActivity() {
             val confirmPassword = binding.signupConfirm.text.toString()
 
             if (email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty()) {
-                if (isValidEmail(email)) { // Validate email format
+                if (isValidEmail(email)) {
                     if (password == confirmPassword) {
                         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    // Navigate to SignIn activity after successful signup
-                                    val intent = Intent(this, SignInActivity::class.java)
-                                    startActivity(intent)
-                                    finish() // Close the current SignUp activity
+                            .addOnCompleteListener { task ->
+                                if (task.isSuccessful) {
+                                    val editor = sharedPreferences.edit()
+                                    editor.putString("email", email)
+                                    editor.putString("password", password)
+                                    editor.apply()
+                                    Toast.makeText(this, "Account created successfully.", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(this, SignInActivity::class.java))
+                                    finish()
                                 } else {
-                                    Toast.makeText(this, "Error: ${it.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                                 }
                             }
                     } else {
@@ -71,7 +72,4 @@ class SignUpActivity : AppCompatActivity() {
         val pattern = Pattern.compile(emailPattern)
         return pattern.matcher(email).matches()
     }
-
-
-
 }
