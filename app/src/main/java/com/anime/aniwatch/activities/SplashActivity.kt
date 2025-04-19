@@ -51,12 +51,6 @@ class SplashActivity : AppCompatActivity() {
                             ).show()
                         } else {
                             proceedToNextScreen()
-                            Toast.makeText(
-                                this,
-                                "Update available: $latestVersion" +
-                                        "\nCurrent version: ${BuildConfig.VERSION_NAME}",
-                                Toast.LENGTH_SHORT
-                            ).show()
                         }
                     }
                 } else {
