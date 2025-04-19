@@ -72,7 +72,7 @@ class SplashActivity : AppCompatActivity() {
             .setPositiveButton("Update") { _, _ ->
                 // Redirect to app store or update URL
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = android.net.Uri.parse("https://github.com/jonvicbarcenas/MobileDevelopment/releases/download/$latestVersion/app-release.apk")
+                intent.data = android.net.Uri.parse("https://github.com/jonvicbarcenas/MobileDevelopment/releases/download/v$latestVersion/app-release.apk")
                 startActivity(intent)
                 finish()
             }
