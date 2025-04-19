@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <ScrollView
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/black"
+            android:padding="16dp">
+
+        <LinearLayout
+                android:id="@+id/privacyPolicyLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/corner"
+                android:padding="24dp"
+                android:elevation="4dp">
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="AniWatch Privacy Policy"
+                    android:textColor="@color/blue"
+                    android:textSize="24sp"
+                    android:paddingBottom="16dp"
+                    android:textStyle="bold"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="1. Information Collection:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="We collect personal information such as your name, email address, and payment details when you create an account or make purchases. We also gather usage data, including your IP address and device information, to enhance your experience."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2. Use of Information:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Your information is used to provide and improve our services, process transactions, and communicate with you about updates and promotions."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="3. Data Sharing:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="We do not sell your personal information. We may share your data with trusted third-party service providers to assist with operations, but only as necessary and in compliance with applicable laws."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="4. User Rights:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="You have the right to access, correct, or delete your personal information. You can also opt-out of marketing communications at any time."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="5. Security:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="We implement reasonable security measures to protect your data from unauthorized access and breaches."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="6. Changes to Policy:"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:paddingBottom="4dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="We may update our privacy policy periodically. Any changes will be communicated through the app."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="For more detailed information, please refer to our full Privacy Policy."
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"/>
+
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="[Link to full policy]"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:paddingBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+        </LinearLayout>
+    </ScrollView>

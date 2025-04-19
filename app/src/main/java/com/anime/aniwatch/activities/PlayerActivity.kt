@@ -51,11 +51,7 @@ class PlayerActivity : AppCompatActivity() {
 
         playerView = findViewById(R.id.playerView)
 
-        backButton = findViewById(R.id.backButton)
 
-
-        // Set back button functionality
-        backButton.setOnClickListener { finish() }
 
 
         // Set up fullscreen button click listener

@@ -21,10 +21,7 @@
                 android:exported="false"
                 android:label="@string/title_activity_player"
                 android:theme="@style/Theme.App.AniWatch" />
-        <activity
-                android:name=".activities.MovieDetailActivity"
-                android:exported="true"
-                android:theme="@style/Theme.App.AniWatch" />
+
         <activity
                 android:name=".activities.ChangePasswordActivity"
                 android:exported="true"

@@ -1,24 +1,43 @@
 <resources>
     <string name="app_name">AniWatch</string>
 
-    <string-array name="movie_titles">
-        <item>One Piece</item>
-        <item>Naruto</item>
-        <item>Bleach</item>
-        <item>Fairy Tail</item>
-        <item>Black Clover</item>
-
-    </string-array>
-
-    <!-- Movie Descriptions -->
-    <string-array name="movie_descriptions">
-        <item>One Piece is a popular manga and anime series created by Eiichiro Oda. Set in a world where pirates roam the seas, the story follows Monkey D. Luffy and his crew, the Straw Hat Pirates, as they search for the ultimate treasure known as the "One Piece" and strive to become the next Pirate King..</item>
-        <item>Naruto is a Japanese anime series and manga series about a young ninja named Naruto Uzumaki. The story follows Naruto as he overcomes challenges to become the leader of his village, the Hokage. </item>
-        <item>Bleach is a Japanese manga series written and illustrated by Tite Kubo. It follows the adventures of a teenager Ichigo Kurosaki, who obtains the powers of a Soul Reaper—a death personification similar to a Grim Reaper—from another Soul Reaper, Rukia Kuchiki.</item>
-        <item>Fairy Tail is a Japanese manga series written and illustrated by Hiro Mashima. The series follows the adventures of the Celestial Spirit Mage Lucy Heartfilia after she joins the Fairy Tail Guild and teams up with Natsu Dragneel. </item>
-        <item>Black Clover is set in a world where people are born with the ability to use magic, the story follows Asta, a young boy without any magic power who is given a rare grimoire that grants him anti-magic abilities. With his fellow mages from the Black Bulls, Asta plans to become the next Wizard King.</item>
-    </string-array>
     <string name="title_activity_player">PlayerActivity</string>
 
 
+        <!-- Vision description -->
+        <string name="vision">At AniWatch, we aim to provide anime fans with a seamless streaming experience, offering a vast library of high-quality shows. Our goal is to create a user-friendly platform where fans can easily discover, watch, and enjoy anime, anytime and anywhere. We’re dedicated to making anime more accessible and enjoyable for everyone.</string>
+
+        <string name="person1_name">Leana Mariflor A. Belaguas</string>
+        <string name="person1_bio">UI / UX</string>
+        <string name="person1_experience">Java, Kotlin, Android Development, UI/UX</string>
+
+        <string name="person2_name">Jon Vic T. Barcenas</string>
+        <string name="person2_bio">Back end</string>
+        <string name="person2_experience">React, JavaScript, HTML/CSS, Frontend Development</string>
+
+
+    <!-- Privacy Policy Strings -->
+    <string name="policy_title">Privacy Policy</string>
+
+    <string name="policy_section_1_title">1. Information Collection</string>
+    <string name="policy_section_1_desc">We collect personal information such as your name, email address, and payment details when you create an account or make purchases. We also gather usage data, including your IP address and device information, to enhance your experience.</string>
+
+    <string name="policy_section_2_title">2. Use of Information</string>
+    <string name="policy_section_2_desc">Your information is used to provide and improve our services, process transactions, and communicate with you about updates and promotions.</string>
+
+    <string name="policy_section_3_title">3. Data Sharing</string>
+    <string name="policy_section_3_desc">We do not sell your personal information. We may share your data with trusted third-party service providers to assist with operations, but only as necessary and in compliance with applicable laws.</string>
+
+    <string name="policy_section_4_title">4. User Rights</string>
+    <string name="policy_section_4_desc">You have the right to access, correct, or delete your personal information. You can also opt-out of marketing communications at any time.</string>
+
+    <string name="policy_section_5_title">5. Security</string>
+    <string name="policy_section_5_desc">We implement reasonable security measures to protect your data from unauthorized access and breaches.</string>
+
+    <string name="policy_section_6_title">6. Changes to Policy</string>
+    <string name="policy_section_6_desc">We may update our privacy policy periodically. Any changes will be communicated through the app.</string>
+
+
 </resources>
+
+

@@ -25,8 +25,8 @@ import com.google.firebase.database.*
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.storage.StorageReference
 import com.anime.aniwatch.R
-
-
+import com.anime.aniwatch.activities.NotificationsActivity
+import com.anime.aniwatch.activities.SettingsActivity
 
 class AccountFragment : Fragment() {
 
@@ -72,15 +72,24 @@ class AccountFragment : Fragment() {
 
         // Load the saved profile image from SharedPreferences
         val sharedPreferences = requireContext().getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.zoro)  // Default image if not set
+        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.account)  // Default image if not set
 
         // Set the image in the ImageView
         val profileImageView: ImageView = binding.profile
         profileImageView.setImageResource(savedImageResId)
 
-        // Navigate to ProfileEditActivity for updating username/email
         binding.editProfile.setOnClickListener {
             val intent = Intent(requireContext(), ProfileEditActivity::class.java)
+            startActivityForResult(intent, 100)
+        }
+
+        binding.notifications.setOnClickListener {
+            val intent = Intent(requireContext(), NotificationsActivity::class.java)
+            startActivityForResult(intent, 100)
+        }
+
+        binding.settings.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivityForResult(intent, 100)
         }
 
@@ -89,7 +98,6 @@ class AccountFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Handle logout action
         binding.logout.setOnClickListener {
             showLogoutDialog()
         }
@@ -106,6 +114,9 @@ class AccountFragment : Fragment() {
             if (!updatedUsername.isNullOrEmpty()) {
                 binding.fullName.text = updatedUsername // Update the username in the UI
             }
+
+            // Update user profile
+            updateUserProfile(updatedUsername, updatedEmail)
 
             // Handle the image update
             val imageResId = data?.getIntExtra("selectedImage", R.drawable.account) ?: R.drawable.account
@@ -175,7 +186,6 @@ class AccountFragment : Fragment() {
         dialog.show()
     }
 
-    // Only showing changes in logoutUser() to resolve conflict.
 
     private fun logoutUser() {
         val sharedPreferences = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)

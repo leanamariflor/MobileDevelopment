@@ -16,16 +16,6 @@
             android:orientation="vertical">
 
         <!-- Back Button -->
-        <ImageButton
-                android:id="@+id/backButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/arrow_back1"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp" />
 
         <!-- Video Player -->
         <com.google.android.exoplayer2.ui.StyledPlayerView
