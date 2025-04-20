@@ -33,9 +33,16 @@ import android.content.res.Configuration
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.anime.aniwatch.data.WatchHistory
 import com.anime.aniwatch.fragment.EpisodeFragment
 import com.anime.aniwatch.network.AnimeResponse
 import com.anime.aniwatch.network.EpisodeResponse
+import com.anime.aniwatch.util.WatchHistoryUtil
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -50,9 +57,15 @@ class PlayerActivity : AppCompatActivity() {
 
     private var isFullscreen = false
 
+    private lateinit var database: FirebaseDatabase
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
+
+        database = FirebaseDatabase.getInstance()
+        auth = FirebaseAuth.getInstance()
 
         val animeTitleText: TextView = findViewById(R.id.animeTitleText)
         val episodeTitleText: TextView = findViewById(R.id.episodeTitleText)
@@ -204,85 +217,99 @@ class PlayerActivity : AppCompatActivity() {
         this.subtitleTracks = subtitleTracks
         this.referer = referer
 
-        if (exoPlayer != null) {
-            exoPlayer?.stop()
-            exoPlayer?.release()
-        }
-        exoPlayer = ExoPlayer.Builder(this).build()
-        exoPlayer?.playWhenReady = playWhenReady
-        playerView.player = exoPlayer
+        val episodeId = intent.getStringExtra("EPISODE_ID") ?: return
+        val animeId = intent.getStringExtra("ANIME_ID") ?: return
+        val userId = auth.currentUser?.uid ?: return
 
-        playerView.subtitleView?.apply {
-            val captionStyle = CaptionStyleCompat(
-                android.graphics.Color.WHITE,
-                android.graphics.Color.parseColor("#33000000"),
-                CaptionStyleCompat.EDGE_TYPE_NONE,
-                CaptionStyleCompat.EDGE_TYPE_NONE,
-                android.graphics.Color.WHITE,
-                null
-            )
-            setStyle(captionStyle)
-            setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION)
-        }
+        val historyRef = database.getReference("WatchHistory").child(userId)
+        val uniqueKey = "$animeId-$episodeId"
 
-        val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
-            .setDefaultRequestProperties(mapOf("Referer" to referer))
+        // Retrieve watchedTime from Firebase
+        historyRef.child(uniqueKey).get().addOnSuccessListener { snapshot ->
+            val savedWatchedTime = snapshot.child("watchedTime").getValue(Long::class.java) ?: 0L
 
-        val videoSource = HlsMediaSource.Factory(defaultHttpDataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(hlsUrl))
+            if (exoPlayer != null) {
+                exoPlayer?.stop()
+                exoPlayer?.release()
+            }
+            exoPlayer = ExoPlayer.Builder(this).build()
+            exoPlayer?.playWhenReady = playWhenReady
+            playerView.player = exoPlayer
 
-        val defaultTrack = subtitleTracks.find { it.default }
-
-        if (defaultTrack != null) {
-            exoPlayer?.trackSelectionParameters = exoPlayer?.trackSelectionParameters
-                ?.buildUpon()
-                ?.setPreferredTextLanguage(defaultTrack.label)
-                ?.build()!!
-        }
-
-        if (subtitleTracks.isNotEmpty()) {
-            val mediaSources = mutableListOf<MediaSource>(videoSource)
-
-            subtitleTracks.forEach { track ->
-                val subtitleSource = SingleSampleMediaSource.Factory(defaultHttpDataSourceFactory)
-                    .createMediaSource(
-                        MediaItem.SubtitleConfiguration.Builder(Uri.parse(track.file))
-                            .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage(track.label)
-                            .setLabel(track.label)
-                            .setSelectionFlags(if (track.default) C.SELECTION_FLAG_DEFAULT else 0)
-                            .build(),
-                        C.TIME_UNSET
-                    )
-                mediaSources.add(subtitleSource)
+            playerView.subtitleView?.apply {
+                val captionStyle = CaptionStyleCompat(
+                    android.graphics.Color.WHITE,
+                    android.graphics.Color.parseColor("#33000000"),
+                    CaptionStyleCompat.EDGE_TYPE_NONE,
+                    CaptionStyleCompat.EDGE_TYPE_NONE,
+                    android.graphics.Color.WHITE,
+                    null
+                )
+                setStyle(captionStyle)
+                setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION)
             }
 
-            val mergedSource = MergingMediaSource(*mediaSources.toTypedArray())
-            exoPlayer?.setMediaSource(mergedSource)
-        } else {
-            exoPlayer?.setMediaSource(videoSource)
-        }
+            val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
+                .setDefaultRequestProperties(mapOf("Referer" to referer))
 
-        exoPlayer?.seekTo(playbackPosition)
-        exoPlayer?.prepare()
+            val videoSource = HlsMediaSource.Factory(defaultHttpDataSourceFactory)
+                .createMediaSource(MediaItem.fromUri(hlsUrl))
 
-        exoPlayer?.addListener(object : Player.Listener {
-            override fun onEvents(player: Player, events: Player.Events) {
-                if (events.contains(Player.EVENT_TRACKS_CHANGED)) {
-                    val trackGroups = player.currentTracks.groups
-                    val subtitleTracks = trackGroups.filter { group ->
-                        group.type == C.TRACK_TYPE_TEXT
-                    }
-                    if (subtitleTracks.isEmpty()) {
-                        println("No subtitle tracks found.")
-                    } else {
-                        println("${subtitleTracks.size} subtitle tracks loaded successfully.")
+            val defaultTrack = subtitleTracks.find { it.default }
+
+            if (defaultTrack != null) {
+                exoPlayer?.trackSelectionParameters = exoPlayer?.trackSelectionParameters
+                    ?.buildUpon()
+                    ?.setPreferredTextLanguage(defaultTrack.label)
+                    ?.build()!!
+            }
+
+            if (subtitleTracks.isNotEmpty()) {
+                val mediaSources = mutableListOf<MediaSource>(videoSource)
+
+                subtitleTracks.forEach { track ->
+                    val subtitleSource = SingleSampleMediaSource.Factory(defaultHttpDataSourceFactory)
+                        .createMediaSource(
+                            MediaItem.SubtitleConfiguration.Builder(Uri.parse(track.file))
+                                .setMimeType(MimeTypes.TEXT_VTT)
+                                .setLanguage(track.label)
+                                .setLabel(track.label)
+                                .setSelectionFlags(if (track.default) C.SELECTION_FLAG_DEFAULT else 0)
+                                .build(),
+                            C.TIME_UNSET
+                        )
+                    mediaSources.add(subtitleSource)
+                }
+
+                val mergedSource = MergingMediaSource(*mediaSources.toTypedArray())
+                exoPlayer?.setMediaSource(mergedSource)
+            } else {
+                exoPlayer?.setMediaSource(videoSource)
+            }
+
+            // Start playback from savedWatchedTime
+            exoPlayer?.seekTo(savedWatchedTime)
+            exoPlayer?.prepare()
+
+            exoPlayer?.addListener(object : Player.Listener {
+                override fun onEvents(player: Player, events: Player.Events) {
+                    if (events.contains(Player.EVENT_TRACKS_CHANGED)) {
+                        val trackGroups = player.currentTracks.groups
+                        val subtitleTracks = trackGroups.filter { group ->
+                            group.type == C.TRACK_TYPE_TEXT
+                        }
+                        if (subtitleTracks.isEmpty()) {
+                            println("No subtitle tracks found.")
+                        } else {
+                            println("${subtitleTracks.size} subtitle tracks loaded successfully.")
+                        }
                     }
                 }
-            }
-        })
+            })
+        }.addOnFailureListener {
+            Toast.makeText(this, "Failed to retrieve watch history", Toast.LENGTH_SHORT).show()
+        }
     }
-
     private fun releasePlayer() {
         exoPlayer?.let { player ->
             playbackPosition = player.currentPosition
@@ -295,23 +322,42 @@ class PlayerActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let {
-            val episodeId = it.getStringExtra("EPISODE_ID")
-            val animeId = it.getStringExtra("ANIME_ID")
+            val newEpisodeId = it.getStringExtra("EPISODE_ID") ?: return
+            val newAnimeId = it.getStringExtra("ANIME_ID") ?: return
 
-            if (!episodeId.isNullOrEmpty()) {
-                fetchEpisodeSources(episodeId)
-                if (animeId != null) {
-                    fetchEpisodeDetails(animeId, episodeId, findViewById(R.id.animeTitleText), findViewById(R.id.episodeTitleText), findViewById(R.id.episodeNumberText))
-                }
-            }
+            // Clear the current player state
+            exoPlayer?.stop()
+            exoPlayer?.clearMediaItems()
+
+            // Update the intent data
+            this.intent = intent
+
+            // Fetch and prepare the new episode
+            fetchEpisodeSources(newEpisodeId)
+            loadEpisodeFragment(newAnimeId)
+            fetchEpisodeDetails(newAnimeId, newEpisodeId,
+                findViewById(R.id.animeTitleText),
+                findViewById(R.id.episodeTitleText),
+                findViewById(R.id.episodeNumberText)
+            )
         }
     }
+
 
     override fun onPause() {
         super.onPause()
         exoPlayer?.let { player ->
-            playbackPosition = player.currentPosition
-            playWhenReady = player.playWhenReady
+            val watchedTime = player.currentPosition
+            val totalTime = player.duration
+
+            val episodeId = intent.getStringExtra("EPISODE_ID") ?: return
+            val animeId = intent.getStringExtra("ANIME_ID") ?: return
+            val animeTitle = findViewById<TextView>(R.id.animeTitleText).text.toString() // Retrieve animeTitle
+            val episodeTitle = findViewById<TextView>(R.id.episodeTitleText).text.toString()
+            val episodeNumber = findViewById<TextView>(R.id.episodeNumberText).text.toString()
+                .replace("Episode: ", "").toIntOrNull() ?: 0
+
+            saveWatchHistory(episodeId, animeId, animeTitle, episodeTitle, episodeNumber, watchedTime, totalTime)
         }
         releasePlayer()
     }
@@ -404,5 +450,28 @@ class PlayerActivity : AppCompatActivity() {
                 Toast.makeText(this@PlayerActivity, "Failed to load episode details", Toast.LENGTH_SHORT).show()
             }
         })
+    }
+
+    private fun saveWatchHistory(
+        episodeId: String,
+        animeId: String,
+        animeTitle: String, // Add animeTitle parameter
+        episodeTitle: String,
+        episodeNumber: Int,
+        watchedTime: Long,
+        totalTime: Long
+    ) {
+        val currentDate = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
+        val watchHistory = WatchHistory(
+            animeId = animeId,
+            animeTitle = animeTitle, // Set animeTitle
+            episodeId = episodeId,
+            episodeTitle = episodeTitle,
+            episodeNumber = episodeNumber,
+            watchedTime = watchedTime,
+            totalTime = totalTime,
+            dateWatched = currentDate
+        )
+        WatchHistoryUtil.saveWatchHistory(this, watchHistory)
     }
 }

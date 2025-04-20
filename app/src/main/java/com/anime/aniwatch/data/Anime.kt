@@ -13,3 +13,17 @@ data class Episodes(
     val sub: Int?,
     val dub: Int?
 )
+
+data class WatchHistory(
+    var animeId: String = "",
+    var animeTitle: String = "",
+    var episodeId: String = "",
+    var episodeTitle: String = "",
+    var episodeNumber: Int = 0,
+    var watchedTime: Long = 0L,
+    var totalTime: Long = 0L,
+    var dateWatched: String = "",
+    var animePosterUrl: String = ""
+) {
+    constructor() : this("", "", "", "", 0, 0L, 0L, "", "")
+}
