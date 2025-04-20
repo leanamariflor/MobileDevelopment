@@ -130,6 +130,8 @@ class PlayerActivity : AppCompatActivity() {
             .build()
 
         val apiService = retrofit.create(ApiService::class.java)
+
+        // First attempt: Fetch from the default server
         apiService.getEpisodeSources(episodeId).enqueue(object : Callback<EpisodeSourceResponse> {
             override fun onResponse(call: Call<EpisodeSourceResponse>, response: Response<EpisodeSourceResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
@@ -145,6 +147,10 @@ class PlayerActivity : AppCompatActivity() {
                             finish()
                         }
                     }
+                } else if (response.code() == 500 && response.errorBody()?.string()?.contains("Couldn't find server") == true) {
+                    Toast.makeText(this@PlayerActivity, "Server not found, trying backup server...", Toast.LENGTH_SHORT).show()
+                    // If the first server fails, try the backup server
+                    fetchEpisodeSourcesFromBackup(episodeId)
                 } else {
                     Toast.makeText(this@PlayerActivity, "Failed to load episode sources", Toast.LENGTH_SHORT).show()
                     finish()
@@ -158,6 +164,41 @@ class PlayerActivity : AppCompatActivity() {
         })
     }
 
+    private fun fetchEpisodeSourcesFromBackup(episodeId: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+
+        apiService.getEpisodeSourcesBackup(episodeId).enqueue(object : Callback<EpisodeSourceResponse> {
+            override fun onResponse(call: Call<EpisodeSourceResponse>, response: Response<EpisodeSourceResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val sourceData = response.body()?.data
+                    if (sourceData != null) {
+                        val hlsUrl = sourceData.sources.firstOrNull { it.type == "hls" }?.url
+
+                        if (hlsUrl != null) {
+                            val referer = sourceData.headers["Referer"] ?: "https://megacloud.blog/"
+                            preparePlayer(hlsUrl, sourceData.tracks, referer)
+                        } else {
+                            Toast.makeText(this@PlayerActivity, "No playable sources found", Toast.LENGTH_SHORT).show()
+                            finish()
+                        }
+                    }
+                } else {
+                    Toast.makeText(this@PlayerActivity, "Failed to load backup episode sources", Toast.LENGTH_SHORT).show()
+                    finish()
+                }
+            }
+
+            override fun onFailure(call: Call<EpisodeSourceResponse>, t: Throwable) {
+                Toast.makeText(this@PlayerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        })
+    }
     private fun preparePlayer(hlsUrl: String, subtitleTracks: List<Track>, referer: String) {
         mediaSourceUrl = hlsUrl
         this.subtitleTracks = subtitleTracks

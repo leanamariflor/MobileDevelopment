@@ -59,8 +59,12 @@ class AccountFragment : Fragment() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val username = snapshot.child("username").getValue(String::class.java)
-                        Log.d("AccountFragment", "Fetched username: $username") // Log the fetched username
-                        binding.fullName.text = username ?: "Unknown User"  // Set the username in the TextView
+                        Log.d("AccountFragment", "Fetched username: $username")
+
+                        // Safely access binding
+                        _binding?.let {
+                            it.fullName.text = username ?: "Unknown User"
+                        }
                     }
                 }
 

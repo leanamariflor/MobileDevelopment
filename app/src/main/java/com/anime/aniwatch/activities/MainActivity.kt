@@ -44,6 +44,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun replaceFragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
+        val currentFragment = fragmentManager.findFragmentById(R.id.frame_layout)
+
+        // Avoid replacing with the same fragment
+        if (currentFragment != null && currentFragment::class == fragment::class) {
+            return
+        }
+
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         if (fragment is HomeFragment) {
@@ -51,8 +58,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fragmentTransaction.replace(R.id.frame_layout, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        fragmentTransaction.commitAllowingStateLoss() // Use cautiously to avoid state loss crashes
 
         when (fragment) {
             is HomeFragment -> {
@@ -72,7 +78,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun enableBackButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
