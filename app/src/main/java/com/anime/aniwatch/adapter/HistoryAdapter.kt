@@ -1,21 +1,25 @@
 package com.anime.aniwatch.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.data.WatchHistory
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class HistoryAdapter(private val historyList: List<WatchHistory>) :
+class HistoryAdapter(private val historyList: MutableList<WatchHistory>) :
     RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
 
     class HistoryViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -26,6 +30,7 @@ class HistoryAdapter(private val historyList: List<WatchHistory>) :
         val dateWatched: TextView = view.findViewById(R.id.dateWatched)
         val watchedTime: TextView = view.findViewById(R.id.watchedTime)
         val watchProgress: LinearProgressIndicator = view.findViewById(R.id.watchProgress)
+        val deleteButton: ImageView = view.findViewById(R.id.deleteButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
@@ -56,11 +61,37 @@ class HistoryAdapter(private val historyList: List<WatchHistory>) :
         } else {
             0
         }
-        holder.watchProgress.progress = 100 - progress // Invert to show watched progress instead of remaining
+        holder.watchProgress.progress = 100 - progress
 
         Glide.with(holder.itemView.context)
             .load(history.animePosterUrl)
             .into(holder.animePoster)
+
+        // Handle delete button click
+        holder.deleteButton.setOnClickListener {
+            deleteHistoryItem(holder.itemView.context, history, position)
+        }
+    }
+
+    private fun deleteHistoryItem(context: Context, history: WatchHistory, position: Int) {
+        val auth = FirebaseAuth.getInstance()
+        val database = FirebaseDatabase.getInstance()
+        val userId = auth.currentUser?.uid ?: return
+        val historyRef = database.getReference("WatchHistory").child(userId)
+
+        val uniqueKey = "${history.animeId}-${history.episodeId}"
+        historyRef.child(uniqueKey).removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                Toast.makeText(context, "History deleted", Toast.LENGTH_SHORT).show()
+                // Ensure the position is valid before removing the item
+                if (position >= 0 && position < historyList.size) {
+                    historyList.removeAt(position)
+                    notifyItemRemoved(position)
+                }
+            } else {
+                Toast.makeText(context, "Failed to delete history", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun formatDateWatched(dateString: String): String {
@@ -84,7 +115,9 @@ class HistoryAdapter(private val historyList: List<WatchHistory>) :
         } catch (e: Exception) {
             return dateString
         }
-    } fun isSameDay(date1: Date, date2: Date): Boolean {
+    }
+
+    private fun isSameDay(date1: Date, date2: Date): Boolean {
         val cal1 = Calendar.getInstance().apply { time = date1 }
         val cal2 = Calendar.getInstance().apply { time = date2 }
         return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&

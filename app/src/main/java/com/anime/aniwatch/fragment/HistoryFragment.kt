@@ -91,8 +91,8 @@ class HistoryFragment : Fragment() {
                             if (watchHistory.episodeNumber > 0 && watchHistory.episodeTitle.isNotEmpty()) {
                                 tempList.add(watchHistory)
                             }
-                            // Update the adapter only after all items are processed
                             if (tempList.size == snapshot.childrenCount.toInt()) {
+                                tempList.sortByDescending { it.dateWatched }
                                 watchHistoryList.addAll(tempList)
                                 historyAdapter.notifyDataSetChanged()
                             }
