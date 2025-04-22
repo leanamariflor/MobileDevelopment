@@ -1,6 +1,7 @@
 package com.anime.aniwatch.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
+import com.anime.aniwatch.activities.PlayerActivity
 import com.anime.aniwatch.data.WatchHistory
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
@@ -71,8 +73,17 @@ class HistoryAdapter(private val historyList: MutableList<WatchHistory>) :
         holder.deleteButton.setOnClickListener {
             deleteHistoryItem(holder.itemView.context, history, position)
         }
-    }
 
+        // Handle item click to navigate to PlayerActivity
+        holder.itemView.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, PlayerActivity::class.java).apply {
+                putExtra("ANIME_ID", history.animeId)
+                putExtra("EPISODE_ID", history.episodeId)
+            }
+            context.startActivity(intent)
+        }
+    }
     private fun deleteHistoryItem(context: Context, history: WatchHistory, position: Int) {
         val auth = FirebaseAuth.getInstance()
         val database = FirebaseDatabase.getInstance()
