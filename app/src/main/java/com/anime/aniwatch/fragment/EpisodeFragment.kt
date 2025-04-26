@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.activities.PlayerActivity
 import com.anime.aniwatch.adapter.EpisodeAdapter
+import com.anime.aniwatch.network.AnimeResponse
 import com.anime.aniwatch.network.ApiService
 import com.anime.aniwatch.network.Episode
 import com.anime.aniwatch.network.EpisodeResponse
@@ -28,6 +29,9 @@ class EpisodeFragment : Fragment() {
     private lateinit var episodeAdapter: EpisodeAdapter
     private lateinit var recyclerView: RecyclerView
 
+    private var animeTitle: String = ""
+    private var animePosterUrl: String = ""
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,19 +41,60 @@ class EpisodeFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val animeId = arguments?.getString("ANIME_ID") ?: ""
-        episodeAdapter = EpisodeAdapter(emptyList()) { episode ->
-            val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
-                putExtra("EPISODE_ID", episode.episodeId)
-                putExtra("ANIME_ID", animeId)
-                flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
-            }
-            startActivity(intent)
-        }
-        recyclerView.adapter = episodeAdapter
 
-        fetchEpisodes(animeId)
+        // Fetch anime details first to get title and poster URL
+        fetchAnimeDetails(animeId)
 
         return view
+    }
+
+    private fun fetchAnimeDetails(animeId: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(OkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val apiService = retrofit.create(ApiService::class.java)
+        apiService.getAnimeDetails(animeId).enqueue(object : Callback<AnimeResponse> {
+            override fun onResponse(call: Call<AnimeResponse>, response: Response<AnimeResponse>) {
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val animeInfo = response.body()?.data?.anime?.info
+                    if (animeInfo != null) {
+                        animeTitle = animeInfo.name
+                        animePosterUrl = animeInfo.poster
+
+                        // Now that we have the anime details, fetch episodes
+                        setupEpisodeAdapter(animeId)
+                        fetchEpisodes(animeId)
+                    }
+                } else {
+                    Toast.makeText(context, "Failed to load anime details", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<AnimeResponse>, t: Throwable) {
+                Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun setupEpisodeAdapter(animeId: String) {
+        episodeAdapter = EpisodeAdapter(
+            episodes = emptyList(),
+            onEpisodeClick = { episode ->
+                val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
+                    putExtra("EPISODE_ID", episode.episodeId)
+                    putExtra("ANIME_ID", animeId)
+                    flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+                }
+                startActivity(intent)
+            },
+            animeId = animeId,
+            animeTitle = animeTitle,
+            animePosterUrl = animePosterUrl
+        )
+        recyclerView.adapter = episodeAdapter
     }
 
     private fun fetchEpisodes(animeId: String) {
