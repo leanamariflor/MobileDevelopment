@@ -386,7 +386,6 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            // Change orientation to portrait
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         } else {
             super.onBackPressed()
