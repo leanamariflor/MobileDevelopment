@@ -36,7 +36,6 @@ class WatchlistAdapter(
     override fun onBindViewHolder(holder: WatchlistViewHolder, position: Int) {
         val episode = episodes[position]
 
-        // Load anime poster with a gray placeholder
         Glide.with(holder.itemView.context)
             .load(episode.animePosterUrl)
             .placeholder(ColorDrawable(Color.GRAY))
@@ -45,7 +44,6 @@ class WatchlistAdapter(
         holder.animeTitle.text = episode.animeTitle
         holder.episodeInfo.text = "Episode ${episode.episodeNumber}: ${episode.episodeTitle}"
 
-        // Set click listeners
         holder.playButton.setOnClickListener {
             onPlayClick(episode)
         }

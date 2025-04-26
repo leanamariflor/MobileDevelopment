@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.activities.PlayerActivity
 import com.anime.aniwatch.data.WatchHistory
+import com.anime.aniwatch.util.WatchlistUtil
 import com.bumptech.glide.Glide
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.android.gms.tasks.Task
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -69,12 +72,10 @@ class HistoryAdapter(private val historyList: MutableList<WatchHistory>) :
             .load(history.animePosterUrl)
             .into(holder.animePoster)
 
-        // Handle delete button click
         holder.deleteButton.setOnClickListener {
             deleteHistoryItem(holder.itemView.context, history, position)
         }
 
-        // Handle item click to navigate to PlayerActivity
         holder.itemView.setOnClickListener {
             val context = holder.itemView.context
             val intent = Intent(context, PlayerActivity::class.java).apply {
@@ -90,11 +91,21 @@ class HistoryAdapter(private val historyList: MutableList<WatchHistory>) :
         val userId = auth.currentUser?.uid ?: return
         val historyRef = database.getReference("WatchHistory").child(userId)
 
+        WatchlistUtil.isInWatchlist(history.animeId, history.episodeId) { isInWatchlist ->
+            if (!isInWatchlist) {
+                performDeletion(context, historyRef, history, position)
+            } else {
+                Toast.makeText(context, "This episode is in your watchlist. Removing from history only.", Toast.LENGTH_SHORT).show()
+                performDeletion(context, historyRef, history, position)
+            }
+        }
+    }
+
+    private fun performDeletion(context: Context, historyRef: DatabaseReference, history: WatchHistory, position: Int) {
         val uniqueKey = "${history.animeId}-${history.episodeId}"
-        historyRef.child(uniqueKey).removeValue().addOnCompleteListener { task ->
+        historyRef.child(uniqueKey).removeValue().addOnCompleteListener { task: Task<Void> ->
             if (task.isSuccessful) {
                 Toast.makeText(context, "History deleted", Toast.LENGTH_SHORT).show()
-                // Ensure the position is valid before removing the item
                 if (position >= 0 && position < historyList.size) {
                     historyList.removeAt(position)
                     notifyItemRemoved(position)

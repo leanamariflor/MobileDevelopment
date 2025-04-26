@@ -4,8 +4,11 @@ import android.content.Context
 import android.widget.Toast
 import com.anime.aniwatch.data.WatchlistEpisode
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -50,5 +53,29 @@ object WatchlistUtil {
                 Toast.makeText(context, "Failed to remove from watchlist", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    fun isInWatchlist(animeId: String, episodeId: String, callback: (Boolean) -> Unit) {
+        val auth = FirebaseAuth.getInstance()
+        val database: FirebaseDatabase = FirebaseDatabase.getInstance()
+        val userId = auth.currentUser?.uid
+
+        if (userId == null) {
+            callback(false)
+            return
+        }
+
+        val uniqueKey = "$animeId-$episodeId"
+        val watchlistRef = database.getReference("Watchlist").child(userId).child(uniqueKey)
+
+        watchlistRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                callback(snapshot.exists())
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                callback(false)
+            }
+        })
     }
 }
