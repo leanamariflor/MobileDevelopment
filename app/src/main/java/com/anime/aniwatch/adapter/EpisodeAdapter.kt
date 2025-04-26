@@ -13,17 +13,25 @@ import com.anime.aniwatch.data.WatchlistEpisode
 import com.anime.aniwatch.network.Episode
 import com.anime.aniwatch.util.WatchHistoryUtil
 import com.anime.aniwatch.util.WatchlistUtil
+import com.facebook.shimmer.ShimmerFrameLayout
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 class EpisodeAdapter(
-    private var episodes: List<Episode>,
+    private var episodes: List<Episode> = emptyList(),
     private val onEpisodeClick: (Episode) -> Unit, // Click listener
     private val animeId: String = "",
     private val animeTitle: String = "",
     private val animePosterUrl: String = ""
-) : RecyclerView.Adapter<EpisodeAdapter.EpisodeViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var isLoading = true
+
+    companion object {
+        private const val VIEW_TYPE_LOADING = 0
+        private const val VIEW_TYPE_CONTENT = 1
+    }
 
     class EpisodeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val episodeNumber: TextView = view.findViewById(R.id.episodeNumber)
@@ -31,35 +39,61 @@ class EpisodeAdapter(
         val addToWatchlistButton: ImageButton = view.findViewById(R.id.addToWatchlistButton)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EpisodeViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_episode, parent, false)
-        return EpisodeViewHolder(view)
+    class LoadingViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val shimmerFrameLayout: ShimmerFrameLayout = view as ShimmerFrameLayout
     }
 
-    override fun onBindViewHolder(holder: EpisodeViewHolder, position: Int) {
-        val episode = episodes[position]
-        holder.episodeNumber.text = "Episode ${episode.number}"
-        holder.episodeTitle.text = episode.title
+    override fun getItemViewType(position: Int): Int {
+        return if (isLoading) VIEW_TYPE_LOADING else VIEW_TYPE_CONTENT
+    }
 
-        holder.itemView.setOnClickListener {
-            onEpisodeClick(episode)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            VIEW_TYPE_CONTENT -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_episode, parent, false)
+                EpisodeViewHolder(view)
+            }
+            VIEW_TYPE_LOADING -> {
+                val view = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_episode_skeleton, parent, false)
+                LoadingViewHolder(view)
+            }
+            else -> throw IllegalArgumentException("Unknown view type: $viewType")
         }
+    }
 
-        holder.addToWatchlistButton.setOnClickListener(null)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is EpisodeViewHolder -> {
+                val episode = episodes[position]
+                holder.episodeNumber.text = "Episode ${episode.number}"
+                holder.episodeTitle.text = episode.title
 
-        WatchHistoryUtil.isInHistory(animeId, episode.episodeId) { isInHistory ->
-            if (holder.adapterPosition == position) {
-                if (isInHistory) {
-                    holder.episodeNumber.setTextColor(Color.GRAY)
-                    holder.episodeTitle.setTextColor(Color.GRAY)
+                holder.itemView.setOnClickListener {
+                    onEpisodeClick(episode)
+                }
+
+                holder.addToWatchlistButton.setOnClickListener(null)
+
+                WatchHistoryUtil.isInHistory(animeId, episode.episodeId) { isInHistory ->
+                    if (holder.adapterPosition == position) {
+                        if (isInHistory) {
+                            holder.episodeNumber.setTextColor(Color.GRAY)
+                            holder.episodeTitle.setTextColor(Color.GRAY)
+                        }
+                    }
+                }
+
+                WatchlistUtil.isInWatchlist(animeId, episode.episodeId) { isInWatchlist ->
+                    if (holder.adapterPosition == position) {
+                        updateWatchlistButtonState(holder, episode, isInWatchlist)
+                    }
                 }
             }
-        }
-
-        WatchlistUtil.isInWatchlist(animeId, episode.episodeId) { isInWatchlist ->
-            if (holder.adapterPosition == position) {
-                updateWatchlistButtonState(holder, episode, isInWatchlist)
+            is LoadingViewHolder -> {
+                // Start shimmer animation
+                holder.shimmerFrameLayout.startShimmer()
             }
         }
     }
@@ -93,10 +127,29 @@ class EpisodeAdapter(
     }
 
 
-    override fun getItemCount(): Int = episodes.size
+    override fun getItemCount(): Int {
+        return if (isLoading) {
+            // Return a fixed number of skeleton items when loading
+            10
+        } else {
+            episodes.size
+        }
+    }
 
     fun updateEpisodes(newEpisodes: List<Episode>) {
         episodes = newEpisodes
+        isLoading = false
         notifyDataSetChanged()
+    }
+
+    /**
+     * Set the loading state of the adapter
+     * @param loading true to show skeleton loading, false to show content
+     */
+    fun setLoading(loading: Boolean) {
+        if (isLoading != loading) {
+            isLoading = loading
+            notifyDataSetChanged()
+        }
     }
 }

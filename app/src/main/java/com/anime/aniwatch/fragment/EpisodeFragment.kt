@@ -94,6 +94,8 @@ class EpisodeFragment : Fragment() {
             animeTitle = animeTitle,
             animePosterUrl = animePosterUrl
         )
+        // Explicitly set loading state to true to show skeleton loader
+        episodeAdapter.setLoading(true)
         recyclerView.adapter = episodeAdapter
     }
 
@@ -109,13 +111,18 @@ class EpisodeFragment : Fragment() {
             override fun onResponse(call: Call<EpisodeResponse>, response: Response<EpisodeResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
                     val episodes = response.body()?.data?.episodes ?: emptyList()
+                    // updateEpisodes automatically sets isLoading to false
                     episodeAdapter.updateEpisodes(episodes)
                 } else {
+                    // Set loading to false even if there's an error
+                    episodeAdapter.setLoading(false)
                     Toast.makeText(context, "Failed to load episodes", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<EpisodeResponse>, t: Throwable) {
+                // Set loading to false on network failure
+                episodeAdapter.setLoading(false)
                 Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
