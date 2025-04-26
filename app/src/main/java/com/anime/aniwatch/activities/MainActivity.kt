@@ -58,7 +58,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         fragmentTransaction.replace(R.id.frame_layout, fragment)
-        fragmentTransaction.commitAllowingStateLoss() // Use cautiously to avoid state loss crashes
+        fragmentTransaction.commitAllowingStateLoss()
+
+        // Post a runnable to ensure actoions bar updates fter transaction
+        fragmentManager.executePendingTransactions()
 
         when (fragment) {
             is HomeFragment -> {
