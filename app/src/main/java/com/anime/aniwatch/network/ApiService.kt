@@ -19,6 +19,10 @@ interface ApiService {
     @GET("api/v2/hianime/episode/sources")
     fun getEpisodeSources(@Query("animeEpisodeId") episodeId: String): Call<EpisodeSourceResponse>
 
+    //second source as backup appended with &server=hd-2
+    @GET("api/v2/hianime/episode/sources")
+    fun getEpisodeSourcesBackup(@Query("animeEpisodeId") episodeId: String, @Query("server") server: String = "hd-2", @Query("category") category: String = "sub"): Call<EpisodeSourceResponse>
+
     @GET("api/v2/hianime/search")
     fun searchAnime(@Query("q") query: String): Call<SearchResponse>
 }

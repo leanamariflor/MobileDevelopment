@@ -214,4 +214,3 @@ class AccountFragment : Fragment() {
         _binding = null
     }
 }
-

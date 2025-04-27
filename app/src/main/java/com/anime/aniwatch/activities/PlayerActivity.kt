@@ -1,20 +1,19 @@
 package com.anime.aniwatch.activities
 
-import android.net.Uri
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.anime.aniwatch.R
-import com.anime.aniwatch.network.ApiService
-import com.anime.aniwatch.network.EpisodeSourceResponse
+import android.content.res.Configuration
+import android.widget.TextView
+import com.anime.aniwatch.fragment.EpisodeFragment
 import com.anime.aniwatch.network.Track
-import com.anime.aniwatch.util.Constants
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.source.MergingMediaSource
-import com.google.android.exoplayer2.source.SingleSampleMediaSource
-import com.google.android.exoplayer2.source.hls.HlsMediaSource
+import com.anime.aniwatch.player.EpisodeDetailsManager
+import com.anime.aniwatch.player.EpisodeSourceFetcher
+import com.anime.aniwatch.player.FullscreenManager
+import com.anime.aniwatch.player.PlayerManager
+import com.anime.aniwatch.player.WatchHistoryManager
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
@@ -33,10 +32,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 
+
 class PlayerActivity : AppCompatActivity() {
 
-    private var exoPlayer: ExoPlayer? = null
     private lateinit var playerView: StyledPlayerView
+
+    
+    // Helper classes
+    private lateinit var playerManager: PlayerManager
+    private lateinit var fullscreenManager: FullscreenManager
+    private lateinit var episodeSourceFetcher: EpisodeSourceFetcher
+    private lateinit var watchHistoryManager: WatchHistoryManager
+    private lateinit var episodeDetailsManager: EpisodeDetailsManager
+
     private var playbackPosition: Long = 0
     private var playWhenReady: Boolean = true
     private lateinit var backButton: ImageView
@@ -45,205 +53,173 @@ class PlayerActivity : AppCompatActivity() {
     private var isFullscreen = false
 
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
+        val animeTitleText: TextView = findViewById(R.id.animeTitleText)
+        val episodeTitleText: TextView = findViewById(R.id.episodeTitleText)
+        val episodeNumberText: TextView = findViewById(R.id.episodeNumberText)
+        
         playerView = findViewById(R.id.playerView)
+
+        
+        // Initialize helper classes
+        playerManager = PlayerManager(this, playerView)
+        fullscreenManager = FullscreenManager(this, playerView)
+        episodeSourceFetcher = EpisodeSourceFetcher(this)
+        watchHistoryManager = WatchHistoryManager(this)
+        episodeDetailsManager = EpisodeDetailsManager(this)
+        
+
 
 
 
 
         // Set up fullscreen button click listener
         playerView.setControllerOnFullScreenModeChangedListener { isFullScreen ->
-            this.isFullscreen = isFullScreen
             if (isFullScreen) {
-                enterFullscreen()
+                fullscreenManager.enterFullscreen()
             } else {
-                exitFullscreen()
+                fullscreenManager.exitFullscreen()
             }
         }
 
-        // Rest of your existing onCreate code
+        // Get episode and anime IDs from intent
         val episodeId = intent.getStringExtra("EPISODE_ID")
+        val animeId = intent.getStringExtra("ANIME_ID")
+        
         if (episodeId.isNullOrEmpty()) {
             Toast.makeText(this, "Invalid episode ID", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        // Fetch episode sources
         fetchEpisodeSources(episodeId)
-    }
-
-    private fun enterFullscreen() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
-
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        playerView.subtitleView?.apply {
-            setPadding(0, 0, 0, 150)
+        
+        // Load episode fragment
+        loadEpisodeFragment(animeId.toString())
+        
+        // Fetch episode details
+        if (animeId != null && episodeId != null) {
+            episodeDetailsManager.fetchEpisodeDetails(
+                animeId, 
+                episodeId, 
+                animeTitleText, 
+                episodeTitleText, 
+                episodeNumberText
+            )
         }
-    }
-
-    private fun exitFullscreen() {
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        // Reset SubtitleView position for normal mode
-        playerView.subtitleView?.apply {
-            setPadding(0, 0, 0, 50)
-        }
-    }
-
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            playerView.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        } else {
-            playerView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-            playerView.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        }
+        
+        Toast.makeText(this, "Anime ID: $animeId", Toast.LENGTH_SHORT).show()
     }
 
     private fun fetchEpisodeSources(episodeId: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val apiService = retrofit.create(ApiService::class.java)
-        apiService.getEpisodeSources(episodeId).enqueue(object : Callback<EpisodeSourceResponse> {
-            override fun onResponse(call: Call<EpisodeSourceResponse>, response: Response<EpisodeSourceResponse>) {
-                if (response.isSuccessful && response.body()?.success == true) {
-                    val sourceData = response.body()?.data
-                    if (sourceData != null) {
-                        val hlsUrl = sourceData.sources.firstOrNull { it.type == "hls" }?.url
-
-                        if (hlsUrl != null) {
-                            val referer = sourceData.headers["Referer"] ?: "https://megacloud.blog/"
-                            preparePlayer(hlsUrl, sourceData.tracks, referer)
-                        } else {
-                            Toast.makeText(this@PlayerActivity, "No playable sources found", Toast.LENGTH_SHORT).show()
-                            finish()
-                        }
-                    }
-                } else {
-                    Toast.makeText(this@PlayerActivity, "Failed to load episode sources", Toast.LENGTH_SHORT).show()
-                    finish()
+        episodeSourceFetcher.fetchEpisodeSources(episodeId, object : EpisodeSourceFetcher.EpisodeSourceCallback {
+            override fun onSourceFetched(hlsUrl: String, tracks: List<Track>, referer: String) {
+                // Get watched time from history
+                val animeId = intent.getStringExtra("ANIME_ID") ?: return
+                
+                watchHistoryManager.getWatchedTime(episodeId, animeId) { savedWatchedTime ->
+                    // Prepare player with the fetched sources
+                    playerManager.preparePlayer(hlsUrl, tracks, referer, savedWatchedTime)
                 }
             }
 
-            override fun onFailure(call: Call<EpisodeSourceResponse>, t: Throwable) {
-                Toast.makeText(this@PlayerActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            override fun onError(message: String) {
+                Toast.makeText(this@PlayerActivity, message, Toast.LENGTH_SHORT).show()
                 finish()
             }
         })
     }
 
-    private fun preparePlayer(hlsUrl: String, subtitleTracks: List<Track>, referer: String) {
-        exoPlayer = ExoPlayer.Builder(this).build()
-        exoPlayer?.playWhenReady = playWhenReady
-        playerView.player = exoPlayer
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        fullscreenManager.handleConfigurationChange(newConfig)
+    }
 
-        playerView.subtitleView?.apply {
-            val captionStyle = CaptionStyleCompat(
-                android.graphics.Color.WHITE,
-                android.graphics.Color.parseColor("#33000000"),
-                CaptionStyleCompat.EDGE_TYPE_NONE,
-                CaptionStyleCompat.EDGE_TYPE_NONE,
-                android.graphics.Color.WHITE,
-                null
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        intent?.let {
+            val newEpisodeId = it.getStringExtra("EPISODE_ID") ?: return
+            val newAnimeId = it.getStringExtra("ANIME_ID") ?: return
+
+            // Clear the current player state
+            playerManager.stopPlayer()
+
+            // Update the intent data
+            this.intent = intent
+
+            // Fetch and prepare the new episode
+            fetchEpisodeSources(newEpisodeId)
+            loadEpisodeFragment(newAnimeId)
+            episodeDetailsManager.fetchEpisodeDetails(
+                newAnimeId,
+                newEpisodeId,
+                findViewById(R.id.animeTitleText),
+                findViewById(R.id.episodeTitleText),
+                findViewById(R.id.episodeNumberText)
             )
-            setStyle(captionStyle)
-            setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION)
         }
-
-        val defaultHttpDataSourceFactory = DefaultHttpDataSource.Factory()
-            .setDefaultRequestProperties(mapOf("Referer" to referer))
-
-        val videoSource = HlsMediaSource.Factory(defaultHttpDataSourceFactory)
-            .createMediaSource(MediaItem.fromUri(hlsUrl))
-
-        val defaultTrack = subtitleTracks.find { it.default }
-
-        if (defaultTrack != null) {
-            exoPlayer?.trackSelectionParameters = exoPlayer?.trackSelectionParameters
-                ?.buildUpon()
-                ?.setPreferredTextLanguage(defaultTrack.label)
-                ?.build()!!
-        }
-
-        if (subtitleTracks.isNotEmpty()) {
-            val mediaSources = mutableListOf<MediaSource>(videoSource)
-
-            subtitleTracks.forEach { track ->
-                val subtitleSource = SingleSampleMediaSource.Factory(defaultHttpDataSourceFactory)
-                    .createMediaSource(
-                        MediaItem.SubtitleConfiguration.Builder(Uri.parse(track.file))
-                            .setMimeType(MimeTypes.TEXT_VTT)
-                            .setLanguage(track.label)
-                            .setLabel(track.label)
-                            .setSelectionFlags(if (track.default) C.SELECTION_FLAG_DEFAULT else 0)
-                            .build(),
-                        C.TIME_UNSET
-                    )
-                mediaSources.add(subtitleSource)
-            }
-
-            val mergedSource = MergingMediaSource(*mediaSources.toTypedArray())
-            exoPlayer?.setMediaSource(mergedSource)
-        } else {
-            exoPlayer?.setMediaSource(videoSource)
-        }
-
-        exoPlayer?.seekTo(playbackPosition)
-        exoPlayer?.prepare()
-
-        exoPlayer?.addListener(object : Player.Listener {
-            override fun onEvents(player: Player, events: Player.Events) {
-                if (events.contains(Player.EVENT_TRACKS_CHANGED)) {
-                    val trackGroups = player.currentTracks.groups
-                    val subtitleTracks = trackGroups.filter { group ->
-                        group.type == C.TRACK_TYPE_TEXT
-                    }
-                    if (subtitleTracks.isEmpty()) {
-                        println("No subtitle tracks found.")
-                    } else {
-                        println("${subtitleTracks.size} subtitle tracks loaded successfully.")
-                    }
-                }
-            }
-        })
-    }
-
-    private fun releasePlayer() {
-        exoPlayer?.let { player ->
-            playbackPosition = player.currentPosition
-            playWhenReady = player.playWhenReady
-            player.release()
-            exoPlayer = null
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        releasePlayer()
     }
 
     override fun onPause() {
         super.onPause()
-        releasePlayer()
+        
+        // Save watch history
+        val episodeId = intent.getStringExtra("EPISODE_ID") ?: return
+        val animeId = intent.getStringExtra("ANIME_ID") ?: return
+        val animeTitle = findViewById<TextView>(R.id.animeTitleText).text.toString()
+        val episodeTitle = findViewById<TextView>(R.id.episodeTitleText).text.toString()
+        val episodeNumber = findViewById<TextView>(R.id.episodeNumberText).text.toString()
+            .replace("Episode: ", "").toIntOrNull() ?: 0
+        
+        watchHistoryManager.saveWatchHistory(
+            episodeId,
+            animeId,
+            animeTitle,
+            episodeTitle,
+            episodeNumber,
+            playerManager.getCurrentPosition(),
+            playerManager.getDuration()
+        )
+        
+        // Release player
+        playerManager.releasePlayer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        playerManager.resumePlayer()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        playerManager.releasePlayer()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        releasePlayer()
+        playerManager.releasePlayer()
+    }
+
+    override fun onBackPressed() {
+        if (!fullscreenManager.handleBackPressed()) {
+            super.onBackPressed()
+        }
+    }
+
+    private fun loadEpisodeFragment(animeId: String) {
+        val episodeFragment = EpisodeFragment().apply {
+            arguments = Bundle().apply {
+                putString("ANIME_ID", animeId)
+            }
+        }
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.episodeFragmentContainer, episodeFragment)
+            .commit()
     }
 }

@@ -29,18 +29,30 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun checkForUpdate() {
+        val handler = Handler(Looper.getMainLooper())
+        val timeoutRunnable = Runnable {
+            Toast.makeText(this, "Request timed out. Proceeding to the next screen.", Toast.LENGTH_SHORT).show()
+            proceedToNextScreen()
+        }
+
+        handler.postDelayed(timeoutRunnable, 5000) // Set a 5-second timeout
+
         Thread {
             try {
-                val client = OkHttpClient()
+                val client = OkHttpClient.Builder()
+                    .connectTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
+                    .readTimeout(5, java.util.concurrent.TimeUnit.SECONDS)
+                    .build()
                 val request = Request.Builder().url(versionUrl).build()
                 val response = client.newCall(request).execute()
 
                 if (response.isSuccessful) {
-                    val responseBody = response.body?.string() // Use the body() method
+                    val responseBody = response.body?.string()
                     val jsonObject = JSONObject(responseBody ?: "")
                     latestVersion = jsonObject.getString("version").removePrefix("v")
 
                     runOnUiThread {
+                        handler.removeCallbacks(timeoutRunnable)
                         if (latestVersion != BuildConfig.VERSION_NAME) {
                             showUpdatePrompt()
                             Toast.makeText(
@@ -54,23 +66,25 @@ class SplashActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    proceedToNextScreen()
+                    runOnUiThread {
+                        handler.removeCallbacks(timeoutRunnable) // Cancel the timeout
+                        proceedToNextScreen()
+                    }
                 }
             } catch (e: IOException) {
                 runOnUiThread {
+                    handler.removeCallbacks(timeoutRunnable) // Cancel the timeout
                     Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
                     proceedToNextScreen()
                 }
             }
         }.start()
     }
-
     private fun showUpdatePrompt() {
         AlertDialog.Builder(this)
             .setTitle("Update Available")
             .setMessage("A new version of the app is available. Please update to continue.")
             .setPositiveButton("Update") { _, _ ->
-                // Redirect to app store or update URL
                 val intent = Intent(Intent.ACTION_VIEW)
                 intent.data = android.net.Uri.parse("https://github.com/jonvicbarcenas/MobileDevelopment/releases/download/v$latestVersion/app-release.apk")
                 startActivity(intent)

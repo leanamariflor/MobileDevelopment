@@ -4,6 +4,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -21,12 +24,17 @@ import android.Manifest
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var isFragmentTransactionInProgress = false
+    private val fragmentTransactionDebounceTime = 300L // 300ms debounce time
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // Show disclaimer dialog
+        showDisclaimerDialog()
 
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -74,7 +82,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
+        // If a transaction is already in progress, ignore this request
+        if (isFragmentTransactionInProgress) {
+            return
+        }
+
         val fragmentManager = supportFragmentManager
+        val currentFragment = fragmentManager.findFragmentById(R.id.frame_layout)
+
+        // Avoid replacing with the same fragment
+        if (currentFragment != null && currentFragment::class == fragment::class) {
+            return
+        }
+
+        // Set the flag to indicate a transaction is in progress
+        isFragmentTransactionInProgress = true
+
         val fragmentTransaction = fragmentManager.beginTransaction()
 
         if (fragment is HomeFragment) {
@@ -82,9 +105,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         fragmentTransaction.replace(R.id.frame_layout, fragment)
-        fragmentTransaction.addToBackStack(null)
-        fragmentTransaction.commit()
+        fragmentTransaction.commitAllowingStateLoss()
 
+        // Update UI based on the fragment type
         when (fragment) {
             is HomeFragment -> {
                 supportActionBar?.show()
@@ -102,6 +125,13 @@ class MainActivity : AppCompatActivity() {
                 supportActionBar?.hide()
             }
         }
+
+        binding.root.postDelayed({
+            isFragmentTransactionInProgress = false
+        }, fragmentTransactionDebounceTime)
+    }
+    private fun enableBackButton() {
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 
@@ -151,5 +181,27 @@ class MainActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showDisclaimerDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_disclaimer, null)
+        val dialog = AlertDialog.Builder(this).create()
+        dialog.setView(dialogView)
+        dialog.setCancelable(false)
+
+        val title = dialogView.findViewById<TextView>(R.id.dialog_title)
+        val message = dialogView.findViewById<TextView>(R.id.dialog_message)
+        val button = dialogView.findViewById<Button>(R.id.dialog_button)
+
+        title.text = "⚠️ Disclaimer"
+        message.text = "AniWatch is developed solely for educational purposes and is intended to serve as a learning tool for exploring concepts such as API communication, integration, and mobile application development. The app demonstrates how to interact with APIs, manage data, and implement various Android features like RecyclerView, custom adapters, and user interface components.\n\n" +
+                "We emphasize that AniWatch does not host, stream, or distribute any copyrighted content. The app does not provide access to any illegal or unauthorized sources of anime or other media. All content displayed within the app is either user-provided or simulated for demonstration purposes.\n\n" +
+                "By using AniWatch, users agree to take full responsibility for ensuring compliance with copyright laws and regulations in their respective regions. The developers of AniWatch do not condone or support piracy in any form. This project is strictly for educational exploration and should not be used for any activities that violate intellectual property rights."
+
+        button.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 }

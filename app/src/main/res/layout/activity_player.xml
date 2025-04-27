@@ -1,38 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:background="@color/black"
         android:focusable="true"
-        android:keepScreenOn="true"
-        android:orientation="vertical">
+        android:keepScreenOn="true">
+
+    <com.google.android.exoplayer2.ui.StyledPlayerView
+            android:id="@+id/playerView"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:show_subtitle_button="true"
+            app:resize_mode="fit"
+            app:show_buffering="when_playing"
+            app:show_fastforward_button="true"
+            app:show_next_button="false"
+            app:show_previous_button="false"
+            app:show_rewind_button="true"
+            app:use_artwork="true"
+            app:use_controller="true" />
 
     <LinearLayout
+            android:id="@+id/episodeInfoContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintTop_toBottomOf="@id/playerView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- Back Button -->
+        <TextView
+                android:id="@+id/animeTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
 
-        <!-- Video Player -->
-        <com.google.android.exoplayer2.ui.StyledPlayerView
-                android:id="@+id/playerView"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                app:show_subtitle_button="true"
-                app:resize_mode="fit"
-                app:show_buffering="when_playing"
-                app:show_fastforward_button="true"
-                app:show_next_button="false"
-                app:show_previous_button="false"
-                app:show_rewind_button="true"
-                app:use_artwork="true"
-                app:use_controller="true" />
+        <TextView
+                android:id="@+id/episodeTitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textColor="#BBBBBB"
+                android:layout_marginTop="4dp" />
 
-
+        <TextView
+                android:id="@+id/episodeNumberText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textColor="#888888"
+                android:layout_marginTop="2dp" />
     </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
+    <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/episodeFragmentContainer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/episodeInfoContainer"
+            app:layout_constraintBottom_toBottomOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

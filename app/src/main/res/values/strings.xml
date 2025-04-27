@@ -2,6 +2,8 @@
     <string name="app_name">AniWatch</string>
 
     <string name="title_activity_player">PlayerActivity</string>
+    <string name="episode_title">Episode Title</string>
+    <string name="episode_number">Episode Number</string>
 
 
         <!-- Vision description -->
