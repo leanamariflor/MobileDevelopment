@@ -12,24 +12,35 @@ import com.google.android.material.tabs.TabLayout
 
 class HomeFragment : Fragment() {
 
+    private var viewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        val viewPager: ViewPager = view.findViewById(R.id.viewPager)
-        val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
+        viewPager = view.findViewById(R.id.viewPager)
+        tabLayout = view.findViewById(R.id.tabLayout)
 
         val fragmentAdapter = FragmentAdapter(childFragmentManager)
         fragmentAdapter.addFragment(DayFragment(), "Today")
         fragmentAdapter.addFragment(WeekFragment(), "Week")
         fragmentAdapter.addFragment(MonthFragment(), "Month")
 
-        viewPager.adapter = fragmentAdapter
+        viewPager?.adapter = fragmentAdapter
 
-        tabLayout.setupWithViewPager(viewPager)
+        tabLayout?.setupWithViewPager(viewPager)
 
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // Clean up resources to prevent memory leaks
+        viewPager?.adapter = null
+        viewPager = null
+        tabLayout = null
     }
 }

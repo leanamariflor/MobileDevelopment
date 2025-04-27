@@ -17,6 +17,8 @@ import com.google.firebase.FirebaseApp
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var isFragmentTransactionInProgress = false
+    private val fragmentTransactionDebounceTime = 300L // 300ms debounce time
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun replaceFragment(fragment: Fragment) {
+        // If a transaction is already in progress, ignore this request
+        if (isFragmentTransactionInProgress) {
+            return
+        }
+
         val fragmentManager = supportFragmentManager
         val currentFragment = fragmentManager.findFragmentById(R.id.frame_layout)
 
@@ -56,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         if (currentFragment != null && currentFragment::class == fragment::class) {
             return
         }
+
+        // Set the flag to indicate a transaction is in progress
+        isFragmentTransactionInProgress = true
 
         val fragmentTransaction = fragmentManager.beginTransaction()
 
@@ -66,9 +76,7 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.replace(R.id.frame_layout, fragment)
         fragmentTransaction.commitAllowingStateLoss()
 
-        // Post a runnable to ensure actoions bar updates fter transaction
-        fragmentManager.executePendingTransactions()
-
+        // Update UI based on the fragment type
         when (fragment) {
             is HomeFragment -> {
                 supportActionBar?.show()
@@ -86,6 +94,11 @@ class MainActivity : AppCompatActivity() {
                 supportActionBar?.hide()
             }
         }
+
+        // Reset the flag after a delay to allow the transaction to complete
+        binding.root.postDelayed({
+            isFragmentTransactionInProgress = false
+        }, fragmentTransactionDebounceTime)
     }
     private fun enableBackButton() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

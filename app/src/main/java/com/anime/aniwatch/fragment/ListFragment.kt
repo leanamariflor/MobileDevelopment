@@ -13,6 +13,9 @@ import com.google.android.material.tabs.TabLayout
 
 class ListFragment : Fragment() {
 
+    private var viewPager: ViewPager? = null
+    private var tabLayout: TabLayout? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,22 +32,24 @@ class ListFragment : Fragment() {
             title = "My List"
         }
 
-        val viewPager: ViewPager = view.findViewById(R.id.viewPager)
-        val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
+        viewPager = view.findViewById(R.id.viewPager)
+        tabLayout = view.findViewById(R.id.tabLayout)
 
         val fragmentAdapter = FragmentAdapter(childFragmentManager)
         fragmentAdapter.addFragment(WatchlistFragment(), "Watchlist")
         fragmentAdapter.addFragment(HistoryFragment(), "History")
         fragmentAdapter.addFragment(ScheduleFragment(), "Schedule")
 
-
-        viewPager.adapter = fragmentAdapter
-        tabLayout.setupWithViewPager(viewPager)
+        viewPager?.adapter = fragmentAdapter
+        tabLayout?.setupWithViewPager(viewPager)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
 
-        val activity = activity as? AppCompatActivity
+        // Clean up resources to prevent memory leaks
+        viewPager?.adapter = null
+        viewPager = null
+        tabLayout = null
     }
 }
