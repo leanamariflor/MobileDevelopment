@@ -47,8 +47,9 @@ class WatchlistAdapter(
         holder.animeTitle.text = episode.animeTitle
         holder.episodeInfo.text = "Episode ${episode.episodeNumber}: ${episode.episodeTitle}"
 
-        // Update reminder button appearance based on whether a reminder is set
-        if (episode.hasReminder) {
+        // Update reminder button appearance based on whether a reminder is set and not expired
+        val currentTime = System.currentTimeMillis()
+        if (episode.hasReminder && episode.reminderDate > currentTime) {
             holder.reminderButton.setColorFilter(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_orange_light))
         } else {
             holder.reminderButton.setColorFilter(Color.WHITE)
