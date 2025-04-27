@@ -86,7 +86,8 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
-    implementation(libs.firebase.messaging.ktx)
+
+    implementation(libs.firebase.messaging)
 
     // 🔹 Testing Libraries
     testImplementation(libs.junit)
