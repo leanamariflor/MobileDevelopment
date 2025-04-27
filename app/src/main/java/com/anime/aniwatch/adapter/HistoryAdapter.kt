@@ -91,7 +91,7 @@ class HistoryAdapter(private val historyList: MutableList<WatchHistory>) :
         val userId = auth.currentUser?.uid ?: return
         val historyRef = database.getReference("WatchHistory").child(userId)
 
-        WatchlistUtil.isInWatchlist(history.animeId, history.episodeId) { isInWatchlist ->
+        WatchlistUtil.isInWatchlist("", history.episodeId) { isInWatchlist ->
             if (!isInWatchlist) {
                 performDeletion(context, historyRef, history, position)
             } else {

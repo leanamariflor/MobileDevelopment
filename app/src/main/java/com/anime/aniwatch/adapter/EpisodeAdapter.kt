@@ -85,7 +85,7 @@ class EpisodeAdapter(
                     }
                 }
 
-                WatchlistUtil.isInWatchlist(animeId, episode.episodeId) { isInWatchlist ->
+                WatchlistUtil.isInWatchlist("", episode.episodeId) { isInWatchlist ->
                     if (holder.adapterPosition == position) {
                         updateWatchlistButtonState(holder, episode, isInWatchlist)
                     }
@@ -104,7 +104,7 @@ class EpisodeAdapter(
         if (isInWatchlist) {
             holder.addToWatchlistButton.setImageResource(android.R.drawable.ic_menu_close_clear_cancel)
             holder.addToWatchlistButton.setOnClickListener {
-                WatchlistUtil.removeFromWatchlist(context, animeId, episode.episodeId)
+                WatchlistUtil.removeFromWatchlist(context, "", episode.episodeId)
                 updateWatchlistButtonState(holder, episode, false)
             }
         } else {

@@ -9,84 +9,104 @@
         app:cardElevation="4dp"
         app:cardBackgroundColor="@color/gray">
 
-    <LinearLayout
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="12dp">
+            android:layout_height="wrap_content">
 
+        <!-- Alarm icon at top right -->
         <ImageView
-                android:id="@+id/animePoster"
-                android:layout_width="100dp"
-                android:layout_height="140dp"
-                android:scaleType="centerCrop"
-                android:contentDescription="Anime Poster"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:clipToOutline="true" />
+                android:id="@+id/reminderButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="top|end"
+                android:src="@android:drawable/ic_lock_idle_alarm"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Set reminder"
+                android:tint="#FFFFFF"
+                android:layout_marginEnd="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp" />
 
         <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:gravity="center_vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="12dp">
 
-            <TextView
-                    android:id="@+id/animeTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:maxLines="2"
-                    android:ellipsize="end"
-                    android:letterSpacing="0.02" />
-
-            <TextView
-                    android:id="@+id/episodeInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="#BBBBBB"
-                    android:layout_marginTop="8dp"
-                    android:alpha="0.8" />
+            <ImageView
+                    android:id="@+id/animePoster"
+                    android:layout_width="100dp"
+                    android:layout_height="140dp"
+                    android:scaleType="centerCrop"
+                    android:contentDescription="Anime Poster"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:clipToOutline="true" />
 
             <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp">
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical">
 
-                <Button
-                        android:id="@+id/playButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:text="Play"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:textAllCaps="false"
-                        android:backgroundTint="#FF5722"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginRight="8dp"
-                        app:cornerRadius="20dp" />
+                <TextView
+                        android:id="@+id/animeTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:maxLines="2"
+                        android:ellipsize="end"
+                        android:letterSpacing="0.02" />
 
-                <Button
-                        android:id="@+id/removeButton"
-                        android:layout_width="0dp"
-                        android:layout_height="40dp"
-                        android:layout_weight="1"
-                        android:text="Remove"
-                        android:textColor="@color/white"
+                <TextView
+                        android:id="@+id/episodeInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:textSize="14sp"
-                        android:textAllCaps="false"
-                        android:backgroundTint="#424242"
-                        app:cornerRadius="20dp"
-                        android:alpha="0.9" />
+                        android:textColor="#BBBBBB"
+                        android:layout_marginTop="8dp"
+                        android:alpha="0.8" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="16dp">
+
+                    <Button
+                            android:id="@+id/playButton"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="Play"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textAllCaps="false"
+                            android:backgroundTint="#FF5722"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginRight="8dp"
+                            app:cornerRadius="20dp" />
+
+                    <Button
+                            android:id="@+id/removeButton"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="Remove"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:textAllCaps="false"
+                            android:backgroundTint="#424242"
+                            app:cornerRadius="20dp"
+                            android:alpha="0.9" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </FrameLayout>
 </androidx.cardview.widget.CardView>

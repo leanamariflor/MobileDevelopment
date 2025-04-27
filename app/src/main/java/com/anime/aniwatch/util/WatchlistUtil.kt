@@ -27,7 +27,7 @@ object WatchlistUtil {
             watchlistEpisode.dateAdded = dateFormat.format(Date())
         }
 
-        val uniqueKey = "${watchlistEpisode.animeId}-${watchlistEpisode.episodeId}"
+        val uniqueKey = "${watchlistEpisode.episodeId}"
 
         watchlistRef.child(uniqueKey).setValue(watchlistEpisode).addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -44,7 +44,7 @@ object WatchlistUtil {
         val userId = auth.currentUser?.uid ?: return
         val watchlistRef: DatabaseReference = database.getReference("Watchlist").child(userId)
 
-        val uniqueKey = "$animeId-$episodeId"
+        val uniqueKey = "$episodeId"
 
         watchlistRef.child(uniqueKey).removeValue().addOnCompleteListener { task ->
             if (task.isSuccessful) {
@@ -65,7 +65,7 @@ object WatchlistUtil {
             return
         }
 
-        val uniqueKey = "$animeId-$episodeId"
+        val uniqueKey = "$episodeId"
         val watchlistRef = database.getReference("Watchlist").child(userId).child(uniqueKey)
 
         watchlistRef.addListenerForSingleValueEvent(object : ValueEventListener {

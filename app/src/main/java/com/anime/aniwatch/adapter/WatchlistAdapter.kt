@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.anime.aniwatch.R
 import com.anime.aniwatch.data.WatchlistEpisode
@@ -16,7 +17,8 @@ import com.bumptech.glide.Glide
 class WatchlistAdapter(
     private var episodes: List<WatchlistEpisode>,
     private val onPlayClick: (WatchlistEpisode) -> Unit,
-    private val onRemoveClick: (WatchlistEpisode) -> Unit
+    private val onRemoveClick: (WatchlistEpisode) -> Unit,
+    private val onReminderClick: (WatchlistEpisode) -> Unit
 ) : RecyclerView.Adapter<WatchlistAdapter.WatchlistViewHolder>() {
 
     class WatchlistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -25,6 +27,7 @@ class WatchlistAdapter(
         val episodeInfo: TextView = view.findViewById(R.id.episodeInfo)
         val playButton: Button = view.findViewById(R.id.playButton)
         val removeButton: Button = view.findViewById(R.id.removeButton)
+        val reminderButton: ImageView = view.findViewById(R.id.reminderButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WatchlistViewHolder {
@@ -44,12 +47,23 @@ class WatchlistAdapter(
         holder.animeTitle.text = episode.animeTitle
         holder.episodeInfo.text = "Episode ${episode.episodeNumber}: ${episode.episodeTitle}"
 
+        // Update reminder button appearance based on whether a reminder is set
+        if (episode.hasReminder) {
+            holder.reminderButton.setColorFilter(ContextCompat.getColor(holder.itemView.context, android.R.color.holo_orange_light))
+        } else {
+            holder.reminderButton.setColorFilter(Color.WHITE)
+        }
+
         holder.playButton.setOnClickListener {
             onPlayClick(episode)
         }
 
         holder.removeButton.setOnClickListener {
             onRemoveClick(episode)
+        }
+
+        holder.reminderButton.setOnClickListener {
+            onReminderClick(episode)
         }
     }
 
