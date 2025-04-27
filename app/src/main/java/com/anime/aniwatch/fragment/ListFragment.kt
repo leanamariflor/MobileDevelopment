@@ -29,9 +29,6 @@ class ListFragment : Fragment() {
             title = "My List"
         }
 
-        val logo: ImageView? = activity?.findViewById(R.id.logo)
-        logo?.visibility = View.GONE
-
         val viewPager: ViewPager = view.findViewById(R.id.viewPager)
         val tabLayout: TabLayout = view.findViewById(R.id.tabLayout)
 
@@ -49,7 +46,5 @@ class ListFragment : Fragment() {
         super.onDestroyView()
 
         val activity = activity as? AppCompatActivity
-        val logo: ImageView? = activity?.findViewById(R.id.logo)
-        logo?.visibility = View.VISIBLE
     }
 }
