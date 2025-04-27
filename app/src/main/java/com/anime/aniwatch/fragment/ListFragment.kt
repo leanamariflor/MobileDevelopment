@@ -6,9 +6,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
-import com.anime.aniwatch.Download
 import com.anime.aniwatch.R
 import com.anime.aniwatch.adapter.FragmentAdapter
+import com.anime.aniwatch.fragment.ScheduleFragment
 import com.google.android.material.tabs.TabLayout
 
 class ListFragment : Fragment() {
@@ -35,7 +35,7 @@ class ListFragment : Fragment() {
         val fragmentAdapter = FragmentAdapter(childFragmentManager)
         fragmentAdapter.addFragment(WatchlistFragment(), "Watchlist")
         fragmentAdapter.addFragment(HistoryFragment(), "History")
-        fragmentAdapter.addFragment(Download(), "Download")
+        fragmentAdapter.addFragment(ScheduleFragment(), "Schedule")
 
 
         viewPager.adapter = fragmentAdapter
