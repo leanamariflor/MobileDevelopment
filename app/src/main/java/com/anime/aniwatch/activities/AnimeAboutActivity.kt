@@ -39,7 +39,6 @@ class AnimeAboutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_anime_about)
 
-        // Initialize views
         backButton = findViewById(R.id.backButton)
         thumbnail = findViewById(R.id.thumbnail)
         titleText = findViewById(R.id.titleText)
@@ -51,19 +50,14 @@ class AnimeAboutActivity : AppCompatActivity() {
         toggleDescriptionButton = findViewById(R.id.toggleDescriptionButton)
 
 
-        // Set back button functionality
         backButton.setOnClickListener { finish() }
 
-        // Fetch anime ID from intent
         val animeId = intent.getStringExtra("ANIME_ID") ?: return
 
-        // Fetch anime details
         fetchAnimeDetails(animeId)
 
-        // Load EpisodeFragment and pass the animeId
         loadEpisodeFragment(animeId)
 
-        // Set toggle button functionality
         toggleDescriptionButton.setOnClickListener {
             isDescriptionExpanded = !isDescriptionExpanded
             if (isDescriptionExpanded) {
@@ -107,10 +101,8 @@ class AnimeAboutActivity : AppCompatActivity() {
             .load(anime.info.poster)
             .into(thumbnail)
 
-        // Set text fields
         titleText.text = anime.info.name
 
-        // Find the current season or fallback to the first season
         val currentSeason = seasons.find { it.isCurrent } ?: seasons.firstOrNull()
         seasonText.text = currentSeason?.title ?: "No Season"
 

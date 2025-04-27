@@ -51,16 +51,15 @@ class AccountFragment : Fragment() {
         databaseReference = FirebaseDatabase.getInstance().getReference("Users")
 
         val userEmail = auth.currentUser?.email
-        binding.email.text = userEmail ?: "No Email" // Display email as non-editable TextView
+        binding.email.text = userEmail ?: "No Email"
 
         if (uid != null) {
-            // Fetch the latest username from Firebase Realtime Database
             databaseReference.child(uid).addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     if (snapshot.exists()) {
                         val username = snapshot.child("username").getValue(String::class.java)
-                        Log.d("AccountFragment", "Fetched username: $username") // Log the fetched username
-                        binding.fullName.text = username ?: "Unknown User"  // Set the username in the TextView
+                        Log.d("AccountFragment", "Fetched username: $username")
+                        binding.fullName.text = username ?: "Unknown User"
                     }
                 }
 
@@ -70,11 +69,9 @@ class AccountFragment : Fragment() {
             })
         }
 
-        // Load the saved profile image from SharedPreferences
         val sharedPreferences = requireContext().getSharedPreferences("userPrefs", Context.MODE_PRIVATE)
-        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.account)  // Default image if not set
+        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.account)
 
-        // Set the image in the ImageView
         val profileImageView: ImageView = binding.profile
         profileImageView.setImageResource(savedImageResId)
 
@@ -107,29 +104,27 @@ class AccountFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (resultCode == AppCompatActivity.RESULT_OK && requestCode == 100) {
-            // Get the updated username (if any)
+
             val updatedUsername = data?.getStringExtra("updatedUsername")
             val updatedEmail = data?.getStringExtra("updatedEmail")
 
             if (!updatedUsername.isNullOrEmpty()) {
-                binding.fullName.text = updatedUsername // Update the username in the UI
+                binding.fullName.text = updatedUsername
             }
 
-            // Update user profile
             updateUserProfile(updatedUsername, updatedEmail)
 
-            // Handle the image update
             val imageResId = data?.getIntExtra("selectedImage", R.drawable.account) ?: R.drawable.account
             val profileImageView: ImageView = binding.profile
-            profileImageView.setImageResource(imageResId)  // Set the selected image resource ID to the ImageView
+            profileImageView.setImageResource(imageResId)
         }
     }
 
     private fun updateUserProfile(updatedUsername: String?, updatedEmail: String?) {
-        val user = auth.currentUser  // Declare 'user' once at the start
+        val user = auth.currentUser
         val uid = user?.uid
         if (uid != null) {
-            // Update Firebase Database with the new username and email
+
             val userUpdates = mapOf<String, Any>(
                 "username" to updatedUsername.orEmpty(),
                 "email" to updatedEmail.orEmpty()
@@ -143,10 +138,9 @@ class AccountFragment : Fragment() {
             }
         }
 
-        // Update Firebase Authentication user profile
         val profileUpdates = UserProfileChangeRequest.Builder()
             .setDisplayName(updatedUsername)
-            .setPhotoUri(null) // Keep this null unless you want to allow updating profile pictures
+            .setPhotoUri(null)
             .build()
 
         user?.updateProfile(profileUpdates)?.addOnCompleteListener { task ->
@@ -155,7 +149,6 @@ class AccountFragment : Fragment() {
             }
         }
 
-        // Update the email if provided and is valid
         updatedEmail?.let {
             user?.updateEmail(it)?.addOnCompleteListener { task ->
                 if (task.isSuccessful) {

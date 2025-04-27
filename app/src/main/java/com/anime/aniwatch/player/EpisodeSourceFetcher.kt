@@ -27,7 +27,7 @@ class EpisodeSourceFetcher(private val context: Context) {
     private val apiService = retrofit.create(ApiService::class.java)
 
     fun fetchEpisodeSources(episodeId: String, callback: EpisodeSourceCallback) {
-        // First attempt: Fetch from the default server
+
         apiService.getEpisodeSources(episodeId).enqueue(object : Callback<EpisodeSourceResponse> {
             override fun onResponse(call: Call<EpisodeSourceResponse>, response: Response<EpisodeSourceResponse>) {
                 if (response.isSuccessful && response.body()?.success == true) {
@@ -44,7 +44,7 @@ class EpisodeSourceFetcher(private val context: Context) {
                     }
                 } else if (response.code() == 500 && response.errorBody()?.string()?.contains("Couldn't find server") == true) {
                     Toast.makeText(context, "Server not found, trying backup server...", Toast.LENGTH_SHORT).show()
-                    // If the first server fails, try the backup server
+
                     fetchEpisodeSourcesFromBackup(episodeId, callback)
                 } else {
                     callback.onError("Failed to load episode sources")

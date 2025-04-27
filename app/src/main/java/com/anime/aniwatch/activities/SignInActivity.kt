@@ -32,11 +32,9 @@ class SignInActivity : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         sharedPrefs = getSharedPreferences("UserPrefs", MODE_PRIVATE)
 
-        // Initialize Remember Me
         val rememberMe = sharedPrefs.getBoolean("rememberMe", false)
         binding.rememberMeCheckbox.isChecked = rememberMe
 
-        // Session check
         val sessionExpiration = sharedPrefs.getLong("sessionExpiration", 0L)
         val isSessionValid = System.currentTimeMillis() < sessionExpiration
 

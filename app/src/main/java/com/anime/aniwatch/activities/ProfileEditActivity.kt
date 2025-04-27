@@ -34,7 +34,7 @@ class ProfileEditActivity : AppCompatActivity() {
                 val data = result.data
                 if (data != null && data.data != null) {
                     imageUri = data.data
-                    binding.profileImage.setImageURI(imageUri) // Show selected image
+                    binding.profileImage.setImageURI(imageUri)
                 }
             }
         }
@@ -45,7 +45,6 @@ class ProfileEditActivity : AppCompatActivity() {
         binding = ActivityProfileEditBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set up the toolbar with a back button
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -74,7 +73,6 @@ class ProfileEditActivity : AppCompatActivity() {
             }
         }
 
-        // Handle profile image click - show predefined images to select
         binding.profileImage.setOnClickListener {
             // Show predefined profile images from drawable
             showImagePickerDialog()
@@ -85,30 +83,24 @@ class ProfileEditActivity : AppCompatActivity() {
         }
     }
 
-    // Show a dialog to pick a profile image
     private fun showImagePickerDialog() {
-        // Inflate the dialog layout
+
         val dialogView = layoutInflater.inflate(R.layout.profile_images, null)
         val gridView = dialogView.findViewById<GridView>(R.id.gridViewImages)
 
-        // Use MovieData.movieImages for image IDs
-        val imageIds = MovieData.avatars.toTypedArray() // Convert to array
+        val imageIds = MovieData.avatars.toTypedArray()
 
-        // Initialize the adapter and set it to the GridView
         val imageAdapter = ProfileImageAdapter(this, imageIds)
         gridView.adapter = imageAdapter
 
-        // Create the dialog
         val dialog = android.app.AlertDialog.Builder(this)
             .setTitle("Select Profile Image")
             .setView(dialogView)
-            .setCancelable(true)  // Allow dialog to be canceled by tapping outside
+            .setCancelable(true)
             .create()
 
-        // Show the dialog
         dialog.show()
 
-        // Handle the image selection
         gridView.setOnItemClickListener { _, _, position, _ ->
             val selectedImageRes = imageIds[position]
             setProfileImage(selectedImageRes)
@@ -118,19 +110,17 @@ class ProfileEditActivity : AppCompatActivity() {
 
 
     private fun setProfileImage(imageResId: Int) {
-        // Set the selected image to the profile image view
         binding.profileImage.setImageResource(imageResId)
 
-        // Save the selected image to SharedPreferences
         val sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putInt("profileImageRes", imageResId)
-        editor.apply()  // Save the changes
+        editor.apply()
     }
 
     private fun loadProfileImage() {
         val sharedPreferences = getSharedPreferences("userPrefs", MODE_PRIVATE)
-        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.account)  // Default image if not set
+        val savedImageResId = sharedPreferences.getInt("profileImageRes", R.drawable.account)
         binding.profileImage.setImageResource(savedImageResId)
     }
 
@@ -150,27 +140,23 @@ class ProfileEditActivity : AppCompatActivity() {
             "email" to email
         )
 
-        // If an image was selected, upload it to Firebase Storage
         if (imageUri != null) {
             val imageRef = storageReference.child("profile_images/${uid}.jpg")
 
             imageRef.putFile(imageUri!!)
                 .addOnSuccessListener {
                     imageRef.downloadUrl.addOnSuccessListener { uri ->
-                        // Store the image URL in the database
                         userUpdates["profileImageUrl"] = uri.toString()
 
-                        // Update user profile with new data
                         updateUserDataInDatabase(uid, userUpdates)
                     }
                 }
                 .addOnFailureListener {
                     Log.e(TAG, "Failed to upload image: ${it.message}")
                     Toast.makeText(this, "Failed to upload image", Toast.LENGTH_SHORT).show()
-                    updateUserDataInDatabase(uid, userUpdates) // Update without image if upload fails
+                    updateUserDataInDatabase(uid, userUpdates)
                 }
         } else {
-            // If no image was selected, update the user data without image
             updateUserDataInDatabase(uid, userUpdates)
         }
     }
@@ -182,7 +168,6 @@ class ProfileEditActivity : AppCompatActivity() {
                     Log.d(TAG, "Profile updated in Firebase: $userUpdates")
                     Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show()
 
-                    // Send updated username back to AccountFragment
                     val resultIntent = Intent()
                     resultIntent.putExtra("updatedUsername", userUpdates["username"] as String)
                     setResult(RESULT_OK, resultIntent)

@@ -28,7 +28,7 @@ class FirebaseMessageReceiver : FirebaseMessagingService() {
     private fun showNotification(title: String, message: String) {
         val channelId = "aniwatch_channel"
         val builder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.logo_no_bg) // ← use your own drawable here
+            .setSmallIcon(R.drawable.logo_no_bg)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

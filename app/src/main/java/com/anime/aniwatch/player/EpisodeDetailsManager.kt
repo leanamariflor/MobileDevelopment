@@ -29,7 +29,7 @@ class EpisodeDetailsManager(private val context: Context) {
         episodeTitleText: TextView,
         episodeNumberText: TextView
     ) {
-        // Fetch anime details
+
         apiService.getAnimeDetails(animeId).enqueue(object : Callback<AnimeResponse> {
             override fun onResponse(call: Call<AnimeResponse>, response: Response<AnimeResponse>) {
                 if (response.isSuccessful) {
@@ -78,7 +78,7 @@ class EpisodeDetailsManager(private val context: Context) {
         var animeDetailsLoaded = false
         var episodeDetailsLoaded = false
         
-        // Fetch anime details
+
         apiService.getAnimeDetails(animeId).enqueue(object : Callback<AnimeResponse> {
             override fun onResponse(call: Call<AnimeResponse>, response: Response<AnimeResponse>) {
                 if (response.isSuccessful) {

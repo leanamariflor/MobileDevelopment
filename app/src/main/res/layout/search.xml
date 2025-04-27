@@ -34,13 +34,6 @@
                 android:queryBackground="@android:color/transparent"
                 android:queryHint="Search" />
 
-        <!-- Category Button -->
-        <ImageView
-                android:id="@+id/category"
-                android:layout_width="50dp"
-                android:layout_height="27dp"
-                android:layout_marginStart="12dp"
-                android:src="@drawable/category" />
 
     </LinearLayout>
 

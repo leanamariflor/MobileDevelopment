@@ -34,7 +34,7 @@ class ExpandableListAdapter(
             "Terms of Service" -> 1
             "Third-party notices" -> 2
 
-            else -> 3 // Developers
+            else -> 3
         }
     }
 
@@ -64,13 +64,13 @@ class ExpandableListAdapter(
         val groupTitle = getGroup(groupPosition).toString()
         val child = getChild(groupPosition, childPosition) as List<String>
 
-        // Log the group and child data for debugging
+
         Log.d("ExpandableListAdapter", "Group: $groupTitle, Child: $child")
 
         return if (groupTitle == "Privacy Policy") {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.privacy_policy, parent, false)
 
-            // Ensure child has at least 2 elements
+
             if (child.size >= 2) {
                 val titleTextView: TextView = view.findViewById(R.id.policy_title)
                 val descriptionTextView: TextView = view.findViewById(R.id.policyDescription)
@@ -78,7 +78,7 @@ class ExpandableListAdapter(
                 titleTextView.text = child[0]
                 descriptionTextView.text = child[1]
             } else {
-                // Handle the case where child data is not as expected
+
                 Log.e("ExpandableListAdapter", "Child data for Privacy Policy is not valid: $child")
             }
 
@@ -86,7 +86,7 @@ class ExpandableListAdapter(
         }
        else if (groupTitle == "Terms of Service") {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.privacy_policy, parent, false)
-            // Ensure child has at least 2 elements
+
             if (child.size >= 2) {
                 val titleTextView: TextView = view.findViewById(R.id.policy_title)
                 val descriptionTextView: TextView = view.findViewById(R.id.policyDescription)
@@ -94,7 +94,7 @@ class ExpandableListAdapter(
                 titleTextView.text = child[0]
                 descriptionTextView.text = child[1]
             } else {
-                // Handle the case where child data is not as expected
+
                 Log.e("ExpandableListAdapter", "Child data for Privacy Policy is not valid: $child")
             }
 
@@ -104,7 +104,7 @@ class ExpandableListAdapter(
         else if (groupTitle == "Third-party notices") {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.privacy_policy, parent, false)
 
-            // Ensure child has at least 2 elements
+
             if (child.size >= 2) {
                 val titleTextView: TextView = view.findViewById(R.id.policy_title)
                 val descriptionTextView: TextView = view.findViewById(R.id.policyDescription)
@@ -112,7 +112,7 @@ class ExpandableListAdapter(
                 titleTextView.text = child[0]
                 descriptionTextView.text = child[1]
             } else {
-                // Handle the case where child data is not as expected
+
                 Log.e("ExpandableListAdapter", "Child data for Privacy Policy is not valid: $child")
             }
             view
@@ -122,7 +122,7 @@ class ExpandableListAdapter(
         else {
             val view = convertView ?: LayoutInflater.from(context).inflate(R.layout.activity_developers, parent, false)
 
-            // Ensure child has at least 2 elements
+
             if (child.size >= 2) {
                 val personName: TextView = view.findViewById(R.id.personName)
                 val personBio: TextView = view.findViewById(R.id.personBio)
@@ -134,11 +134,11 @@ class ExpandableListAdapter(
                 val aboutDevelopersLayout: LinearLayout = view.findViewById(R.id.aboutDevelopersLayout)
 
 
-                // Ensure child has at least 2 elements
+
                 if (child.size >= 2) {
                     personName.text = child[0]
                     personBio.text = child[1]
-                    // Set visibility and image based on childPosition
+
                 } else {
                     Log.e("ExpandableListAdapter", "Child data for Developers is not valid: $child")
                 }
@@ -153,10 +153,10 @@ class ExpandableListAdapter(
                     vision.visibility = View.GONE
                 }
 
-                // Set the image based on childPosition
+
                 personImage.setImageResource(if (childPosition == 0) R.drawable.profile1 else R.drawable.profile2)
             } else {
-                // Handle the case where child data is not as expected
+
                 Log.e("ExpandableListAdapter", "Child data for Developers is not valid: $child")
             }
 

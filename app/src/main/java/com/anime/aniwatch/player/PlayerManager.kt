@@ -91,7 +91,7 @@ class PlayerManager(private val context: Context, private val playerView: Styled
             exoPlayer?.setMediaSource(videoSource)
         }
 
-        // Start playback from savedWatchedTime
+
         exoPlayer?.seekTo(savedWatchedTime)
         exoPlayer?.prepare()
 

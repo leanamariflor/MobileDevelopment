@@ -55,7 +55,7 @@ class ChangePasswordActivity : AppCompatActivity() {
                             .addOnCompleteListener { updateTask ->
                                 if (updateTask.isSuccessful) {
                                     Toast.makeText(this, "Password updated successfully", Toast.LENGTH_SHORT).show()
-                                    finish() // Close activity after success
+                                    finish()
                                 } else {
                                     Toast.makeText(this, "Failed to update password", Toast.LENGTH_SHORT).show()
                                 }

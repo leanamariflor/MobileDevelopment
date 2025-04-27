@@ -29,7 +29,7 @@ class DateAdapter(
     override fun getItemCount(): Int = dateItems.size
 
     fun updateSelection(position: Int) {
-        // Deselect all items
+
         for (i in dateItems.indices) {
             if (dateItems[i].isSelected) {
                 dateItems[i] = dateItems[i].copy(isSelected = false)
@@ -37,11 +37,9 @@ class DateAdapter(
             }
         }
         
-        // Select the new item
         dateItems[position] = dateItems[position].copy(isSelected = true)
         notifyItemChanged(position)
         
-        // Notify the listener
         onDateSelected(dateItems[position])
     }
 
@@ -62,7 +60,6 @@ class DateAdapter(
             dayTextView.text = dateItem.dayOfWeek
             dateTextView.text = dateItem.dayOfMonth
 
-            // Update the background based on selection state
             if (dateItem.isSelected) {
                 dateTextView.setBackgroundResource(android.R.color.holo_blue_dark)
                 dateTextView.setTextColor(ContextCompat.getColor(context, android.R.color.white))

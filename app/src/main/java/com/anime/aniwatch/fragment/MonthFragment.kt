@@ -52,7 +52,6 @@ class MonthFragment : Fragment() {
             }
         }
 
-        // Set GridLayoutManager with 2 columns
         recyclerView.layoutManager = GridLayoutManager(context, 2)
 
         if (homeViewModel.monthAnimeList.value == null) {

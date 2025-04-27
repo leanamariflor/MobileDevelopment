@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
             proceedToNextScreen()
         }
 
-        handler.postDelayed(timeoutRunnable, 5000) // Set a 5-second timeout
+        handler.postDelayed(timeoutRunnable, 5000)
 
         Thread {
             try {
@@ -54,7 +54,6 @@ class SplashActivity : AppCompatActivity() {
                     runOnUiThread {
                         handler.removeCallbacks(timeoutRunnable)
                         if (latestVersion != BuildConfig.VERSION_NAME) {
-                            showUpdatePrompt()
                             Toast.makeText(
                                 this,
                                 "Update available: $latestVersion" +
@@ -67,35 +66,20 @@ class SplashActivity : AppCompatActivity() {
                     }
                 } else {
                     runOnUiThread {
-                        handler.removeCallbacks(timeoutRunnable) // Cancel the timeout
+                        handler.removeCallbacks(timeoutRunnable)
                         proceedToNextScreen()
                     }
                 }
             } catch (e: IOException) {
                 runOnUiThread {
-                    handler.removeCallbacks(timeoutRunnable) // Cancel the timeout
+                    handler.removeCallbacks(timeoutRunnable)
                     Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show()
                     proceedToNextScreen()
                 }
             }
         }.start()
     }
-    private fun showUpdatePrompt() {
-        AlertDialog.Builder(this)
-            .setTitle("Update Available")
-            .setMessage("A new version of the app is available. Please update to continue.")
-            .setPositiveButton("Update") { _, _ ->
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = android.net.Uri.parse("https://github.com/jonvicbarcenas/MobileDevelopment/releases/download/v$latestVersion/app-release.apk")
-                startActivity(intent)
-                finish()
-            }
-            .setNegativeButton("Cancel") { _, _ ->
-                proceedToNextScreen()
-            }
-            .setCancelable(false)
-            .show()
-    }
+
 
     private fun proceedToNextScreen() {
         Handler(Looper.getMainLooper()).postDelayed({

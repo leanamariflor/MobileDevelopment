@@ -38,7 +38,7 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Clean up resources to prevent memory leaks
+
         viewPager?.adapter = null
         viewPager = null
         tabLayout = null

@@ -9,7 +9,7 @@ import android.widget.ImageView
 class ProfileImageAdapter(private val context: Context, private val imageIds: Array<Int>) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return imageIds.size  // Ensure this returns the total number of items
+        return imageIds.size
     }
 
     override fun getItem(position: Int): Any {
@@ -25,7 +25,7 @@ class ProfileImageAdapter(private val context: Context, private val imageIds: Ar
 
         if (convertView == null) {
             imageView = ImageView(context)
-            imageView.layoutParams = ViewGroup.LayoutParams(200, 200) // Size for grid items
+            imageView.layoutParams = ViewGroup.LayoutParams(200, 200)
             imageView.scaleType = ImageView.ScaleType.CENTER_CROP
         } else {
             imageView = convertView as ImageView

@@ -70,7 +70,7 @@ class WatchlistFragment: Fragment() {
         watchlistAdapter = WatchlistAdapter(
             watchlistEpisodes,
             onPlayClick = { episode ->
-                // Play the episode
+
                 val intent = Intent(requireContext(), PlayerActivity::class.java).apply {
                     putExtra("EPISODE_ID", episode.episodeId)
                     putExtra("ANIME_ID", episode.animeId)
@@ -78,17 +78,17 @@ class WatchlistFragment: Fragment() {
                 startActivity(intent)
             },
             onRemoveClick = { episode ->
-                // Remove from watchlist
+
                 context?.let { ctx ->
                     WatchlistUtil.removeFromWatchlist(ctx, "", episode.episodeId)
-                    // Refresh the list
+
                     watchlistEpisodes.remove(episode)
                     watchlistAdapter.updateEpisodes(watchlistEpisodes)
                     updateEmptyView()
                 }
             },
             onReminderClick = { episode ->
-                // Show date/time picker for setting a reminder
+
                 showReminderDateTimePicker(episode)
             }
         )
@@ -98,16 +98,16 @@ class WatchlistFragment: Fragment() {
 
     private fun showReminderDateTimePicker(episode: WatchlistEpisode) {
         context?.let { ctx ->
-            // If a reminder is already set, ask if the user wants to remove it
+
             if (episode.hasReminder) {
                 val options = arrayOf("Change reminder", "Remove reminder", "Cancel")
                 androidx.appcompat.app.AlertDialog.Builder(ctx)
                     .setTitle("Reminder options")
                     .setItems(options) { dialog, which ->
                         when (which) {
-                            0 -> showDatePicker(ctx, episode) // Change reminder
-                            1 -> cancelReminder(episode) // Remove reminder
-                            2 -> dialog.dismiss() // Cancel
+                            0 -> showDatePicker(ctx, episode)
+                            1 -> cancelReminder(episode)
+                            2 -> dialog.dismiss()
                         }
                     }
                     .show()
@@ -120,7 +120,6 @@ class WatchlistFragment: Fragment() {
     private fun showDatePicker(context: Context, episode: WatchlistEpisode) {
         val calendar = Calendar.getInstance()
 
-        // If there's an existing reminder, use that date
         if (episode.hasReminder && episode.reminderDate > 0) {
             calendar.timeInMillis = episode.reminderDate
         }
@@ -130,12 +129,10 @@ class WatchlistFragment: Fragment() {
         val day = calendar.get(Calendar.DAY_OF_MONTH)
 
         DatePickerDialog(context, { _, selectedYear, selectedMonth, selectedDay ->
-            // Set the selected date to the calendar
             calendar.set(Calendar.YEAR, selectedYear)
             calendar.set(Calendar.MONTH, selectedMonth)
             calendar.set(Calendar.DAY_OF_MONTH, selectedDay)
 
-            // Show time picker
             showTimePicker(context, calendar, episode)
         }, year, month, day).show()
     }
@@ -145,12 +142,10 @@ class WatchlistFragment: Fragment() {
         val minute = calendar.get(Calendar.MINUTE)
 
         TimePickerDialog(context, { _, selectedHour, selectedMinute ->
-            // Set the selected time to the calendar
             calendar.set(Calendar.HOUR_OF_DAY, selectedHour)
             calendar.set(Calendar.MINUTE, selectedMinute)
             calendar.set(Calendar.SECOND, 0)
 
-            // Schedule the reminder
             scheduleReminder(context, calendar.timeInMillis, episode)
         }, hour, minute, true).show()
     }
@@ -163,7 +158,6 @@ class WatchlistFragment: Fragment() {
             putExtra(AlarmReceiver.EXTRA_EPISODE_TITLE, episode.episodeTitle)
         }
 
-        // Create a unique request code based on the episode ID
         val requestCode = episode.episodeId.hashCode()
 
         val pendingIntent = PendingIntent.getBroadcast(
@@ -173,26 +167,21 @@ class WatchlistFragment: Fragment() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        // Schedule the alarm
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent)
         } else {
             alarmManager.setExact(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent)
         }
 
-        // Update the episode with the reminder information
         episode.reminderDate = reminderTime
         episode.hasReminder = true
 
-        // Save the reminder to Firebase
         saveReminderToFirebase(episode)
 
-        // Show confirmation to the user
         val calendar = Calendar.getInstance().apply { timeInMillis = reminderTime }
         val dateTime = android.text.format.DateFormat.format("MMM dd, yyyy HH:mm", calendar).toString()
         Toast.makeText(context, "Reminder set for $dateTime", Toast.LENGTH_LONG).show()
 
-        // Update the UI
         watchlistAdapter.notifyDataSetChanged()
     }
 
@@ -209,20 +198,15 @@ class WatchlistFragment: Fragment() {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
 
-            // Cancel the alarm
             alarmManager.cancel(pendingIntent)
 
-            // Update the episode
             episode.reminderDate = 0
             episode.hasReminder = false
 
-            // Save the updated episode to Firebase
             saveReminderToFirebase(episode)
 
-            // Show confirmation to the user
             Toast.makeText(ctx, "Reminder removed", Toast.LENGTH_SHORT).show()
 
-            // Update the UI
             watchlistAdapter.notifyDataSetChanged()
         }
     }
@@ -253,7 +237,6 @@ class WatchlistFragment: Fragment() {
                     }
                 }
 
-                // Sort by date added (newest first)
                 watchlistEpisodes.sortByDescending { it.dateAdded }
 
                 watchlistAdapter.notifyDataSetChanged()

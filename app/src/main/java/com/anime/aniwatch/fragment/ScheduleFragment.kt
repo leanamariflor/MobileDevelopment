@@ -56,7 +56,6 @@ class ScheduleFragment : Fragment() {
         refreshButton = view.findViewById(R.id.btn_refresh)
         datesRecyclerView = view.findViewById(R.id.recyclerview_dates)
 
-        // Initialize schedule adapter
         scheduleAdapter = ScheduleAdapter(
             requireContext(),
             scheduleList,
@@ -71,10 +70,8 @@ class ScheduleFragment : Fragment() {
             fetchSchedule(selectedDate)
         }
 
-        // Generate date items for the next 7 days
         generateDateItems()
 
-        // Initialize date adapter
         dateAdapter = DateAdapter(
             requireContext(),
             dateItems,
@@ -87,13 +84,12 @@ class ScheduleFragment : Fragment() {
 
         datesRecyclerView.adapter = dateAdapter
 
-        // Select today's date by default
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
-        val todayIndex = currentDay - 1 // Adjust for 0-based index
+        val todayIndex = currentDay - 1
         if (todayIndex >= 0 && todayIndex < dateItems.size) {
             dateAdapter.updateSelection(todayIndex)
-            // Scroll to today's date
+
             datesRecyclerView.post {
                 datesRecyclerView.scrollToPosition(todayIndex)
             }
@@ -109,17 +105,14 @@ class ScheduleFragment : Fragment() {
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
 
-        // Set calendar to the first day of the current month
         calendar.set(Calendar.DAY_OF_MONTH, 1)
 
-        val dayFormat = SimpleDateFormat("EEE", Locale.getDefault()) // Day of week (e.g., "Mon")
-        val dateFormat = SimpleDateFormat("d", Locale.getDefault()) // Day of month (e.g., "15")
-        val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) // API date format
+        val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("d", Locale.getDefault())
+        val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
-        // Get the maximum number of days in the current month
         val maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
 
-        // Generate date items for all days of the current month
         for (i in 0 until maxDays) {
             val date = calendar.time
             val dayOfWeek = dayFormat.format(date).uppercase()
@@ -131,17 +124,15 @@ class ScheduleFragment : Fragment() {
                 dayOfWeek = dayOfWeek,
                 dayOfMonth = dayOfMonth,
                 formattedDate = formattedDate,
-                isSelected = (i + 1) == currentDay // Select today by default
+                isSelected = (i + 1) == currentDay
             )
 
             dateItems.add(dateItem)
 
-            // Move to the next day
             calendar.add(Calendar.DAY_OF_MONTH, 1)
         }
 
-        // Set the selected date to today
-        val todayIndex = currentDay - 1 // Adjust for 0-based index
+        val todayIndex = currentDay - 1
         if (todayIndex >= 0 && todayIndex < dateItems.size) {
             selectedDate = dateItems[todayIndex].formattedDate
         } else if (dateItems.isNotEmpty()) {
